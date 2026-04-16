@@ -27,11 +27,71 @@
         <!-- Vorschau -->
         <div class="preview-card">
           <div class="preview-bg" id="preview-bg">
-            <svg id="avatar" viewBox="0 0 200 240" xmlns="http://www.w3.org/2000/svg">
+            <svg id="avatar" viewBox="0 0 200 440" xmlns="http://www.w3.org/2000/svg">
               <!-- Cape -->
-              <path id="cape" d="M58 148 Q100 270 142 148 L170 230 L30 230 Z" fill="#b91c1c" style="display:none" />
+              <path id="cape" d="M58 148 Q100 270 142 148 L170 260 L30 260 Z" fill="#b91c1c" style="display:none" />
+
+              <!-- === GANZKÖRPER === -->
+              <!-- Hüfte / Becken -->
+              <path id="hips" d="M30 225 Q100 238 170 225 L164 275 Q100 285 36 275 Z" fill="#f5d0a9" />
+              <!-- Linkes Bein -->
+              <path id="leg-left" d="M38 270 Q42 340 50 410 L88 410 Q92 340 96 270 Z" fill="#f5d0a9" />
+              <!-- Rechtes Bein -->
+              <path id="leg-right" d="M104 270 Q108 340 112 410 L150 410 Q158 340 162 270 Z" fill="#f5d0a9" />
+              <!-- Bein-Trennlinie -->
+              <line x1="100" y1="240" x2="100" y2="410" stroke="#000" stroke-opacity="0.2" stroke-width="1.5" />
+              <!-- Oberschenkel-Muskel-Highlights (Quads) -->
+              <ellipse cx="68" cy="310" rx="10" ry="22" fill="#fff" opacity="0.18" />
+              <ellipse cx="132" cy="310" rx="10" ry="22" fill="#fff" opacity="0.18" />
+              <!-- Waden-Highlights -->
+              <ellipse cx="70" cy="380" rx="7" ry="14" fill="#fff" opacity="0.15" />
+              <ellipse cx="130" cy="380" rx="7" ry="14" fill="#fff" opacity="0.15" />
+              <!-- Knie-Linien -->
+              <path d="M58 345 Q68 348 82 345" stroke="#000" stroke-opacity="0.2" stroke-width="1" fill="none" />
+              <path d="M118 345 Q128 348 142 345" stroke="#000" stroke-opacity="0.2" stroke-width="1" fill="none" />
+              <!-- Seitliche Beinschatten -->
+              <path d="M38 270 Q42 340 50 408 L56 408 Q50 340 46 270 Z" fill="#000" opacity="0.1" />
+              <path d="M154 270 Q150 340 144 408 L150 408 Q158 340 162 270 Z" fill="#000" opacity="0.1" />
+              <!-- Schuhe -->
+              <ellipse cx="69" cy="418" rx="19" ry="9" fill="#1f2937" />
+              <ellipse cx="131" cy="418" rx="19" ry="9" fill="#1f2937" />
+              <ellipse cx="69" cy="415" rx="16" ry="4" fill="#fff" opacity="0.15" />
+              <ellipse cx="131" cy="415" rx="16" ry="4" fill="#fff" opacity="0.15" />
+
+              <!-- Arme -->
+              <path id="arm-left" d="M22 165 Q14 200 22 245 Q28 275 36 295 L54 295 Q48 260 44 225 Q42 190 42 162 Z" fill="#f5d0a9" />
+              <path id="arm-right" d="M178 165 Q186 200 178 245 Q172 275 164 295 L146 295 Q152 260 156 225 Q158 190 158 162 Z" fill="#f5d0a9" />
+              <!-- Bizeps-Muskel (Highlight + Schatten) -->
+              <ellipse cx="30" cy="188" rx="6" ry="14" fill="#fff" opacity="0.25" />
+              <ellipse cx="170" cy="188" rx="6" ry="14" fill="#fff" opacity="0.25" />
+              <ellipse cx="42" cy="195" rx="4" ry="10" fill="#000" opacity="0.12" />
+              <ellipse cx="158" cy="195" rx="4" ry="10" fill="#000" opacity="0.12" />
+              <!-- Unterarm-Shading -->
+              <ellipse cx="36" cy="260" rx="4" ry="16" fill="#fff" opacity="0.1" />
+              <ellipse cx="164" cy="260" rx="4" ry="16" fill="#fff" opacity="0.1" />
+              <!-- Ellbogen-Falte -->
+              <path d="M28 230 Q34 234 46 230" stroke="#000" stroke-opacity="0.2" stroke-width="1" fill="none" />
+              <path d="M154 230 Q166 234 172 230" stroke="#000" stroke-opacity="0.2" stroke-width="1" fill="none" />
+              <!-- Hände -->
+              <ellipse id="hand-left" cx="42" cy="300" rx="11" ry="9" fill="#f5d0a9" />
+              <ellipse id="hand-right" cx="158" cy="300" rx="11" ry="9" fill="#f5d0a9" />
+              <!-- Finger-Andeutungen -->
+              <line x1="38" y1="307" x2="38" y2="312" stroke="#000" stroke-opacity="0.2" stroke-width="1" stroke-linecap="round" />
+              <line x1="42" y1="308" x2="42" y2="313" stroke="#000" stroke-opacity="0.2" stroke-width="1" stroke-linecap="round" />
+              <line x1="46" y1="307" x2="46" y2="312" stroke="#000" stroke-opacity="0.2" stroke-width="1" stroke-linecap="round" />
+              <line x1="158" y1="307" x2="158" y2="312" stroke="#000" stroke-opacity="0.2" stroke-width="1" stroke-linecap="round" />
+              <line x1="162" y1="308" x2="162" y2="313" stroke="#000" stroke-opacity="0.2" stroke-width="1" stroke-linecap="round" />
+              <line x1="154" y1="307" x2="154" y2="312" stroke="#000" stroke-opacity="0.2" stroke-width="1" stroke-linecap="round" />
+
               <!-- Körper / Outfit (dynamisch via JS) -->
               <g id="outfit-group"></g>
+
+              <!-- Muskel-Andeutungen durchs Outfit (Brust & Bauch) -->
+              <path d="M100 155 Q82 168 82 198 Q100 205 100 180" stroke="#000" stroke-opacity="0.25" stroke-width="1.8" fill="none" />
+              <path d="M100 155 Q118 168 118 198 Q100 205 100 180" stroke="#000" stroke-opacity="0.25" stroke-width="1.8" fill="none" />
+              <line x1="100" y1="200" x2="100" y2="228" stroke="#000" stroke-opacity="0.25" stroke-width="1.2" />
+              <line x1="90" y1="210" x2="110" y2="210" stroke="#000" stroke-opacity="0.2" stroke-width="1" />
+              <line x1="90" y1="222" x2="110" y2="222" stroke="#000" stroke-opacity="0.2" stroke-width="1" />
               <!-- Hals (tapered) -->
               <path id="neck" d="M87 128 L87 152 Q100 156 113 152 L113 128 Z" fill="#f5d0a9" />
               <!-- Halsschatten -->
