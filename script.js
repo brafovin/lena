@@ -10,6 +10,7 @@ const state = {
   eye: '#4a2c17',
   mouth: 'smile',
   outfit: '#3b82f6',
+  outfitStyle: 'tshirt',
   bg: 'linear-gradient(135deg,#f472b6,#a78bfa)',
   acc: {
     glasses: false, hat: false, cape: false, scar: false, mask: false,
@@ -23,6 +24,79 @@ const state = {
   story: '',
   editingId: null,
 };
+
+// ---------- Farb-Helfer ----------
+function shade(hex, amount) {
+  if (!hex || !hex.startsWith('#') || hex.length < 7) return hex;
+  const n = parseInt(hex.slice(1), 16);
+  let r = (n >> 16) & 255, g = (n >> 8) & 255, b = n & 255;
+  if (amount < 0) {
+    r = Math.max(0, Math.round(r * (1 + amount)));
+    g = Math.max(0, Math.round(g * (1 + amount)));
+    b = Math.max(0, Math.round(b * (1 + amount)));
+  } else {
+    r = Math.min(255, Math.round(r + (255 - r) * amount));
+    g = Math.min(255, Math.round(g + (255 - g) * amount));
+    b = Math.min(255, Math.round(b + (255 - b) * amount));
+  }
+  return '#' + ((r << 16) | (g << 8) | b).toString(16).padStart(6, '0');
+}
+const dk = (c, a = 0.3) => shade(c, -a);
+const lt = (c, a = 0.3) => shade(c, a);
+
+// ---------- Outfit-Stile (40) ----------
+const BODY = 'M54 150 Q100 175 146 150 L170 230 L30 230 Z';
+const BODY_SHADOW = '<path d="M54 150 Q100 168 146 150 L150 185 L50 185 Z" fill="#000" opacity="0.1"/>';
+
+const OUTFIT_STYLES = {
+  tshirt:    c => `<path d="${BODY}" fill="${c}"/>${BODY_SHADOW}<path d="M82 152 Q100 162 118 152" stroke="#000" stroke-opacity="0.3" stroke-width="1.5" fill="none"/>`,
+  hoodie:    c => `<path d="M60 148 Q100 126 140 148 Q130 144 100 144 Q70 144 60 148 Z" fill="${dk(c,0.15)}"/><path d="${BODY}" fill="${c}"/>${BODY_SHADOW}<path d="M82 152 Q100 165 118 152" stroke="${dk(c)}" stroke-width="1.5" fill="none"/><line x1="93" y1="162" x2="90" y2="185" stroke="#fff" stroke-width="2"/><line x1="107" y1="162" x2="110" y2="185" stroke="#fff" stroke-width="2"/><rect x="88" y="183" width="6" height="4" fill="#fff"/><rect x="106" y="183" width="6" height="4" fill="#fff"/><rect x="30" y="220" width="140" height="10" fill="${dk(c,0.2)}"/>`,
+  denim:     c => `<path d="${BODY}" fill="${c}"/>${BODY_SHADOW}<line x1="100" y1="158" x2="100" y2="230" stroke="${dk(c,0.4)}" stroke-width="1.2"/><circle cx="100" cy="175" r="2" fill="#fbbf24"/><circle cx="100" cy="195" r="2" fill="#fbbf24"/><circle cx="100" cy="215" r="2" fill="#fbbf24"/><path d="M55 200 L75 200 L75 220 L55 220 Z" fill="none" stroke="${dk(c,0.4)}" stroke-width="1"/>`,
+  sweater:   c => `<path d="${BODY}" fill="${c}"/>${BODY_SHADOW}<path d="M82 152 Q100 166 118 152" stroke="${dk(c)}" stroke-width="3" fill="none"/><path d="M60 172 Q65 182 60 192 Q65 202 60 212" stroke="${dk(c)}" stroke-width="1.2" fill="none"/><path d="M140 172 Q135 182 140 192 Q135 202 140 212" stroke="${dk(c)}" stroke-width="1.2" fill="none"/><path d="M85 180 Q95 190 85 200 Q95 210 85 220" stroke="${dk(c)}" stroke-width="1.2" fill="none"/><path d="M115 180 Q105 190 115 200 Q105 210 115 220" stroke="${dk(c)}" stroke-width="1.2" fill="none"/>`,
+  tank:      c => `<path d="M74 150 Q100 168 126 150 L170 230 L30 230 L74 150 Z" fill="${c}"/>${BODY_SHADOW}<path d="M78 150 L88 150 L88 130 Q85 128 82 132 Z" fill="${c}"/><path d="M122 150 L112 150 L112 130 Q115 128 118 132 Z" fill="${c}"/>`,
+  shirt:     c => `<path d="${BODY}" fill="${c}"/>${BODY_SHADOW}<path d="M86 152 L100 172 L93 168 Z" fill="${dk(c,0.2)}"/><path d="M114 152 L100 172 L107 168 Z" fill="${dk(c,0.2)}"/><line x1="100" y1="172" x2="100" y2="228" stroke="${dk(c,0.3)}" stroke-width="1"/><circle cx="100" cy="182" r="1.6" fill="#fff"/><circle cx="100" cy="198" r="1.6" fill="#fff"/><circle cx="100" cy="214" r="1.6" fill="#fff"/>`,
+  polo:      c => `<path d="${BODY}" fill="${c}"/>${BODY_SHADOW}<path d="M88 150 L96 164 L96 152 Z" fill="${dk(c,0.25)}"/><path d="M112 150 L104 164 L104 152 Z" fill="${dk(c,0.25)}"/><line x1="100" y1="164" x2="100" y2="182" stroke="${dk(c,0.3)}"/><circle cx="100" cy="170" r="1.3" fill="#fff"/><circle cx="100" cy="178" r="1.3" fill="#fff"/>`,
+  vneck:     c => `<path d="${BODY}" fill="${c}"/>${BODY_SHADOW}<path d="M82 152 L100 180 L118 152" stroke="${dk(c,0.35)}" stroke-width="3" fill="none"/>`,
+  turtleneck:c => `<rect x="84" y="132" width="32" height="20" fill="${c}"/><rect x="84" y="148" width="32" height="4" fill="${dk(c,0.25)}"/><path d="${BODY}" fill="${c}"/>${BODY_SHADOW}`,
+  stripes:   c => `<path d="${BODY}" fill="${c}"/>${BODY_SHADOW}<path d="M30 170 Q100 178 170 170 L170 178 Q100 186 30 178 Z" fill="#fff" opacity="0.85"/><path d="M30 192 Q100 200 170 192 L170 200 Q100 208 30 200 Z" fill="#fff" opacity="0.85"/><path d="M30 214 Q100 222 170 214 L170 222 Q100 230 30 222 Z" fill="#fff" opacity="0.85"/>`,
+  suit:      c => `<path d="${BODY}" fill="${c}"/><path d="M80 152 L100 175 L65 230 L76 152 Z" fill="${dk(c,0.25)}"/><path d="M120 152 L100 175 L135 230 L124 152 Z" fill="${dk(c,0.25)}"/><path d="M95 155 L105 155 L108 173 L92 173 Z" fill="#fff"/><path d="M96 173 L104 173 L107 228 L93 228 Z" fill="#dc2626"/>`,
+  tuxedo:    c => `<path d="${BODY}" fill="${c}"/><path d="M80 152 L100 175 L65 230 L76 152 Z" fill="${lt(c,0.1)}"/><path d="M120 152 L100 175 L135 230 L124 152 Z" fill="${lt(c,0.1)}"/><rect x="94" y="170" width="12" height="60" fill="#fff"/><path d="M86 158 L100 163 L86 168 Z" fill="#1f2937"/><path d="M114 158 L100 163 L114 168 Z" fill="#1f2937"/><rect x="98" y="160" width="4" height="6" fill="#1f2937"/>`,
+  dress:     c => `<path d="M54 150 Q100 175 146 150 L178 230 L22 230 Z" fill="${c}"/><path d="M54 155 Q100 168 146 155 L150 178 Q100 190 50 178 Z" fill="${lt(c,0.15)}" opacity="0.6"/><path d="M82 152 Q100 162 118 152 L115 150 L85 150 Z" fill="${dk(c,0.25)}"/><circle cx="100" cy="165" r="2" fill="#fbbf24"/>`,
+  ballgown:  c => `<path d="M70 150 Q100 172 130 150 L185 230 L15 230 Z" fill="${c}"/><path d="M15 225 Q100 215 185 225 L185 230 L15 230 Z" fill="${dk(c,0.25)}"/><path d="M82 152 Q100 162 118 152" stroke="#fbbf24" stroke-width="2" fill="none"/><circle cx="100" cy="160" r="3" fill="#fbbf24"/><circle cx="60" cy="200" r="2" fill="#fbbf24"/><circle cx="140" cy="200" r="2" fill="#fbbf24"/>`,
+  princess:  c => `<path d="M54 150 Q100 175 146 150 L180 230 L20 230 Z" fill="${c}"/><ellipse cx="38" cy="155" rx="18" ry="14" fill="${c}"/><ellipse cx="162" cy="155" rx="18" ry="14" fill="${c}"/><path d="M78 152 Q100 162 122 152" stroke="#fbbf24" stroke-width="2" fill="none"/><path d="M20 225 Q100 210 180 225 L180 230 L20 230 Z" fill="${lt(c,0.2)}"/>`,
+  wizard:    c => `<path d="M30 150 Q100 185 170 150 L198 230 L2 230 Z" fill="${c}"/>${BODY_SHADOW}<text x="50" y="200" font-size="14" fill="#fbbf24">✦</text><text x="145" y="180" font-size="12" fill="#fbbf24">✦</text><text x="85" y="218" font-size="12" fill="#fbbf24">✦</text><text x="125" y="215" font-size="10" fill="#fbbf24">✧</text>`,
+  superhero: c => `<path d="${BODY}" fill="${c}"/>${BODY_SHADOW}<polygon points="100,170 115,190 108,212 92,212 85,190" fill="#fff"/><text x="100" y="202" text-anchor="middle" font-size="16" font-weight="bold" fill="${c}">S</text><rect x="30" y="220" width="140" height="6" fill="#fbbf24"/>`,
+  armor:     c => `<path d="${BODY}" fill="${c}"/><rect x="86" y="155" width="28" height="32" fill="${lt(c,0.2)}" stroke="${dk(c,0.3)}" stroke-width="1"/><line x1="100" y1="155" x2="100" y2="187" stroke="${dk(c,0.4)}" stroke-width="1"/><rect x="30" y="195" width="140" height="3" fill="${dk(c,0.3)}"/><rect x="30" y="210" width="140" height="3" fill="${dk(c,0.3)}"/><circle cx="65" cy="200" r="3" fill="#fbbf24"/><circle cx="135" cy="200" r="3" fill="#fbbf24"/>`,
+  ninja:     c => `<path d="${BODY}" fill="${c}"/>${BODY_SHADOW}<rect x="30" y="195" width="140" height="10" fill="${dk(c,0.6)}"/><rect x="93" y="195" width="14" height="10" fill="#dc2626"/>`,
+  pirate:    c => `<path d="${BODY}" fill="#fef3c7"/><rect x="30" y="162" width="140" height="10" fill="${c}"/><rect x="30" y="182" width="140" height="10" fill="${c}"/><rect x="30" y="202" width="140" height="10" fill="${c}"/><rect x="30" y="222" width="140" height="8" fill="${c}"/>`,
+  vampire:   c => `<path d="${BODY}" fill="${c}"/><path d="M68 148 L72 128 L100 150 L128 128 L132 148 Q100 158 68 148 Z" fill="${dk(c,0.4)}"/><path d="M95 155 L100 180 L105 155" stroke="#dc2626" stroke-width="2" fill="none"/><circle cx="100" cy="182" r="3" fill="#dc2626"/>`,
+  elven:     c => `<path d="${BODY}" fill="${c}"/>${BODY_SHADOW}<path d="M82 152 Q100 162 118 152 L115 150 L85 150 Z" fill="#16a34a"/><path d="M65 175 Q72 180 78 175 Q72 168 65 175" fill="#16a34a"/><path d="M122 185 Q130 190 136 185 Q130 178 122 185" fill="#16a34a"/><path d="M88 212 Q96 217 102 212 Q96 205 88 212" fill="#16a34a"/>`,
+  angel:     c => `<path d="${BODY}" fill="${c}"/>${BODY_SHADOW}<path d="M30 220 Q100 205 170 220 L170 215 Q100 200 30 215 Z" fill="#fbbf24" opacity="0.7"/><circle cx="100" cy="188" r="4" fill="#fbbf24"/><ellipse cx="100" cy="188" rx="6" ry="2" fill="none" stroke="#fbbf24" stroke-width="0.8"/>`,
+  devil:     c => `<path d="${BODY}" fill="${c}"/><path d="M30 230 L40 218 L50 228 L60 214 L70 228 L80 218 L90 228 L100 212 L110 228 L120 218 L130 228 L140 214 L150 228 L160 218 L170 230 Z" fill="#fbbf24"/><path d="M30 230 L38 223 L48 230 L58 220 L68 230 L78 223 L88 230 L100 218 L112 230 L122 223 L132 230 L142 220 L152 230 L162 223 L170 230 Z" fill="#dc2626"/>`,
+  zombie:    c => `<path d="${BODY}" fill="${c}"/><path d="M55 185 L70 198 L60 215 L48 205 Z" fill="#1f2937" opacity="0.7"/><path d="M135 190 L148 205 L140 220 L128 210 Z" fill="#1f2937" opacity="0.7"/><path d="M90 215 L100 230 L110 215 L105 222 L95 222 Z" fill="#1f2937" opacity="0.7"/><path d="M120 165 L125 172 L118 172 Z" fill="#dc2626"/>`,
+  lab:       c => `<path d="${BODY}" fill="${c}"/>${BODY_SHADOW}<rect x="53" y="200" width="24" height="22" fill="none" stroke="${dk(c,0.25)}" stroke-width="1.2"/><line x1="100" y1="155" x2="100" y2="228" stroke="${dk(c,0.25)}" stroke-width="1"/><circle cx="100" cy="175" r="1.5" fill="${dk(c,0.3)}"/><circle cx="100" cy="193" r="1.5" fill="${dk(c,0.3)}"/><circle cx="100" cy="211" r="1.5" fill="${dk(c,0.3)}"/><rect x="56" y="202" width="6" height="2" fill="#3b82f6"/><rect x="65" y="202" width="4" height="2" fill="#ef4444"/>`,
+  doctor:    c => `<path d="${BODY}" fill="${c}"/>${BODY_SHADOW}<path d="M88 150 L100 170 L112 150" stroke="${dk(c,0.25)}" stroke-width="2" fill="none"/><path d="M85 158 Q75 180 100 200 Q125 180 115 158" stroke="#1f2937" stroke-width="1.5" fill="none"/><circle cx="115" cy="158" r="3" fill="#1f2937"/><circle cx="85" cy="158" r="3" fill="#1f2937"/><circle cx="100" cy="200" r="3" fill="#9ca3af"/>`,
+  chef:      c => `<path d="${BODY}" fill="${c}"/>${BODY_SHADOW}<circle cx="92" cy="168" r="1.8" fill="${dk(c,0.3)}"/><circle cx="108" cy="168" r="1.8" fill="${dk(c,0.3)}"/><circle cx="92" cy="185" r="1.8" fill="${dk(c,0.3)}"/><circle cx="108" cy="185" r="1.8" fill="${dk(c,0.3)}"/><circle cx="92" cy="202" r="1.8" fill="${dk(c,0.3)}"/><circle cx="108" cy="202" r="1.8" fill="${dk(c,0.3)}"/>`,
+  military:  c => `<path d="${BODY}" fill="${c}"/><ellipse cx="62" cy="173" rx="14" ry="9" fill="${dk(c,0.35)}"/><ellipse cx="135" cy="180" rx="16" ry="10" fill="${dk(c,0.35)}"/><ellipse cx="95" cy="205" rx="18" ry="10" fill="${dk(c,0.35)}"/><ellipse cx="150" cy="218" rx="12" ry="7" fill="${lt(c,0.2)}"/><ellipse cx="48" cy="215" rx="10" ry="6" fill="${lt(c,0.2)}"/>`,
+  police:    c => `<path d="${BODY}" fill="${c}"/>${BODY_SHADOW}<rect x="55" y="170" width="18" height="22" fill="#fbbf24" stroke="${dk(c,0.4)}" stroke-width="0.8"/><text x="64" y="188" text-anchor="middle" font-size="12" fill="${c}">★</text><rect x="30" y="200" width="140" height="4" fill="${dk(c,0.5)}"/>`,
+  firefighter:c=> `<path d="${BODY}" fill="${c}"/>${BODY_SHADOW}<rect x="30" y="183" width="140" height="7" fill="#fbbf24"/><rect x="30" y="208" width="140" height="7" fill="#fbbf24"/>`,
+  school:    c => `<path d="${BODY}" fill="${c}"/>${BODY_SHADOW}<path d="M94 152 L106 152 L109 174 L91 174 Z" fill="#dc2626"/><path d="M92 174 L108 174 L106 205 L94 205 Z" fill="#dc2626"/><rect x="60" y="193" width="15" height="15" fill="#fbbf24" stroke="${dk(c,0.3)}" stroke-width="0.8"/>`,
+  cheerleader:c=>`<path d="${BODY}" fill="${c}"/>${BODY_SHADOW}<path d="M30 185 Q100 198 170 185 L170 180 Q100 193 30 180 Z" fill="#fff"/><text x="100" y="215" text-anchor="middle" font-size="22" fill="#fff">★</text>`,
+  jersey:    c => `<path d="${BODY}" fill="${c}"/>${BODY_SHADOW}<text x="100" y="210" text-anchor="middle" font-size="36" font-weight="bold" fill="#fff">7</text>`,
+  bartender: c => `<path d="${BODY}" fill="#fff"/><path d="M30 150 Q60 166 80 155 L80 230 L30 230 Z" fill="${c}"/><path d="M170 150 Q140 166 120 155 L120 230 L170 230 Z" fill="${c}"/><path d="M85 160 L100 166 L85 172 Z" fill="${dk(c,0.3)}"/><path d="M115 160 L100 166 L115 172 Z" fill="${dk(c,0.3)}"/><rect x="98" y="163" width="4" height="6" fill="${dk(c,0.3)}"/>`,
+  hawaiian:  c => `<path d="${BODY}" fill="${c}"/>${BODY_SHADOW}<circle cx="55" cy="180" r="4" fill="#ec4899"/><circle cx="130" cy="195" r="4" fill="#ec4899"/><circle cx="90" cy="210" r="4" fill="#ec4899"/><circle cx="150" cy="215" r="4" fill="#ec4899"/><circle cx="68" cy="220" r="4" fill="#fbbf24"/><circle cx="105" cy="178" r="4" fill="#fbbf24"/><circle cx="115" cy="215" r="4" fill="#16a34a"/><circle cx="75" cy="195" r="3" fill="#16a34a"/>`,
+  pajama:    c => `<path d="${BODY}" fill="${c}"/>${BODY_SHADOW}<circle cx="55" cy="170" r="3" fill="#fff"/><circle cx="85" cy="180" r="3" fill="#fff"/><circle cx="115" cy="175" r="3" fill="#fff"/><circle cx="145" cy="185" r="3" fill="#fff"/><circle cx="70" cy="200" r="3" fill="#fff"/><circle cx="100" cy="205" r="3" fill="#fff"/><circle cx="130" cy="210" r="3" fill="#fff"/><circle cx="60" cy="220" r="3" fill="#fff"/><circle cx="95" cy="225" r="3" fill="#fff"/><circle cx="125" cy="220" r="3" fill="#fff"/>`,
+  spacesuit: c => `<path d="${BODY}" fill="${c}"/><rect x="68" y="148" width="64" height="9" fill="${dk(c,0.3)}"/><rect x="80" y="178" width="40" height="28" fill="${lt(c,0.25)}" stroke="${dk(c,0.3)}" stroke-width="1"/><circle cx="88" cy="190" r="2.2" fill="#dc2626"/><circle cx="100" cy="190" r="2.2" fill="#16a34a"/><circle cx="112" cy="190" r="2.2" fill="#3b82f6"/><rect x="84" y="198" width="32" height="3" fill="${dk(c,0.4)}"/>`,
+  kimono:    c => `<path d="${BODY}" fill="${c}"/><path d="M85 150 L100 230 L115 150" stroke="${dk(c,0.3)}" stroke-width="2" fill="none"/><rect x="30" y="195" width="140" height="18" fill="${dk(c,0.5)}"/><rect x="30" y="200" width="140" height="3" fill="#fbbf24"/>`,
+  toga:      c => `<path d="${BODY}" fill="${c}"/>${BODY_SHADOW}<path d="M70 150 L130 230 L124 230 L64 155 Z" fill="${dk(c,0.25)}" opacity="0.5"/><path d="M86 150 Q100 195 72 230 L78 230 Q102 200 92 150 Z" fill="${lt(c,0.15)}" opacity="0.5"/>`,
+};
+
+function renderOutfit(style, color) {
+  const fn = OUTFIT_STYLES[style] || OUTFIT_STYLES.tshirt;
+  return fn(color);
+}
+
+const OUTFIT_KEYS = Object.keys(OUTFIT_STYLES);
 
 const ACC_KEYS = [
   'glasses', 'hat', 'cape', 'scar', 'mask',
@@ -75,7 +149,7 @@ function setupButtonGroup(containerId, stateKey, applyFn, multi = false) {
       } else {
         container.querySelectorAll('button').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
-        state[stateKey] = btn.dataset.style || btn.dataset.mouth;
+        state[stateKey] = btn.dataset.style || btn.dataset.mouth || btn.dataset.outfit;
       }
       applyFn();
     });
@@ -143,7 +217,7 @@ function updateAvatar() {
   document.getElementById('head').setAttribute('fill', state.skin);
   document.getElementById('neck').setAttribute('fill', state.skin);
   document.querySelectorAll('.ear').forEach(e => e.setAttribute('fill', state.skin));
-  document.getElementById('outfit').setAttribute('fill', state.outfit);
+  document.getElementById('outfit-group').innerHTML = renderOutfit(state.outfitStyle, state.outfit);
   // Iris
   document.querySelectorAll('.eye').forEach(e => e.setAttribute('fill', state.eye));
 
@@ -205,6 +279,7 @@ setupSwatches('outfit-swatches', 'outfit', updateAvatar);
 setupSwatches('bg-swatches', 'bg', updateAvatar);
 setupButtonGroup('hair-style', 'hairStyle', updateAvatar);
 setupButtonGroup('mouth-style', 'mouth', updateAvatar);
+setupButtonGroup('outfit-style', 'outfitStyle', updateAvatar);
 setupButtonGroup('traits', 'traits', updateAvatar, true);
 
 // ---------- Speichern / Laden ----------
@@ -232,6 +307,7 @@ function getCharacterFromState() {
     eye: state.eye,
     mouth: state.mouth,
     outfit: state.outfit,
+    outfitStyle: state.outfitStyle,
     bg: state.bg,
     acc: { ...state.acc },
     power: state.power,
@@ -272,7 +348,7 @@ document.getElementById('reset-btn').addEventListener('click', () => {
 function resetForm() {
   state.name = ''; state.universe = ''; state.age = '';
   state.skin = '#f5d0a9'; state.hair = '#3b2416'; state.hairStyle = 'short';
-  state.eye = '#4a2c17'; state.mouth = 'smile'; state.outfit = '#3b82f6';
+  state.eye = '#4a2c17'; state.mouth = 'smile'; state.outfit = '#3b82f6'; state.outfitStyle = 'tshirt';
   state.bg = 'linear-gradient(135deg,#f472b6,#a78bfa)';
   state.acc = {};
   ACC_KEYS.forEach(k => state.acc[k] = false);
@@ -299,6 +375,7 @@ function syncFormFromState() {
   markSwatch('bg-swatches', state.bg, true);
   markButton('hair-style', 'style', state.hairStyle);
   markButton('mouth-style', 'mouth', state.mouth);
+  markButton('outfit-style', 'outfit', state.outfitStyle);
   markTraits(state.traits);
 }
 
@@ -339,6 +416,7 @@ function randomize() {
   state.eye = rnd(['#4a2c17', '#2563eb', '#16a34a', '#a855f7', '#eab308', '#dc2626']);
   state.mouth = rnd(['smile', 'neutral', 'smirk']);
   state.outfit = rnd(['#3b82f6', '#dc2626', '#16a34a', '#1f2937', '#fbbf24', '#ec4899', '#7c3aed']);
+  state.outfitStyle = rnd(OUTFIT_KEYS);
   state.bg = rnd([
     'linear-gradient(135deg,#f472b6,#a78bfa)',
     'linear-gradient(135deg,#60a5fa,#22d3ee)',
@@ -381,9 +459,7 @@ function avatarSVG(c) {
   return `<svg viewBox="0 0 200 240" xmlns="http://www.w3.org/2000/svg">
     ${a.wings ? '<g><path d="M40 150 Q5 135 15 185 Q35 185 55 170 Z" fill="#fef3c7" stroke="#fbbf24" stroke-width="1.5"/><path d="M160 150 Q195 135 185 185 Q165 185 145 170 Z" fill="#fef3c7" stroke="#fbbf24" stroke-width="1.5"/></g>' : ''}
     ${a.cape ? '<path d="M58 148 Q100 270 142 148 L170 230 L30 230 Z" fill="#b91c1c" />' : ''}
-    <path d="M54 150 Q100 175 146 150 L170 230 L30 230 Z" fill="${c.outfit}" />
-    <path d="M54 150 Q100 168 146 150 L150 185 L50 185 Z" fill="#000" opacity="0.12" />
-    <path d="M82 152 Q100 162 118 152" stroke="#000" stroke-opacity="0.25" stroke-width="1.5" fill="none" />
+    ${renderOutfit(c.outfitStyle || 'tshirt', c.outfit)}
     <path d="M87 128 L87 152 Q100 156 113 152 L113 128 Z" fill="${c.skin}" />
     <path d="M87 145 Q100 152 113 145 L113 152 Q100 156 87 152 Z" fill="#000" opacity="0.18" />
     <ellipse cx="58" cy="108" rx="7" ry="13" fill="${c.skin}" />
@@ -492,7 +568,7 @@ function loadCharacterIntoForm(id) {
   Object.assign(state, {
     name: c.name, universe: c.universe, age: c.age,
     skin: c.skin, hair: c.hair, hairStyle: c.hairStyle,
-    eye: c.eye, mouth: c.mouth, outfit: c.outfit, bg: c.bg,
+    eye: c.eye, mouth: c.mouth, outfit: c.outfit, outfitStyle: c.outfitStyle || 'tshirt', bg: c.bg,
     acc: { ...c.acc }, power: c.power, traits: [...c.traits], story: c.story,
     editingId: c.id,
   });

@@ -30,12 +30,8 @@
             <svg id="avatar" viewBox="0 0 200 240" xmlns="http://www.w3.org/2000/svg">
               <!-- Cape -->
               <path id="cape" d="M58 148 Q100 270 142 148 L170 230 L30 230 Z" fill="#b91c1c" style="display:none" />
-              <!-- Körper / Outfit -->
-              <path id="outfit" d="M54 150 Q100 175 146 150 L170 230 L30 230 Z" fill="#3b82f6" />
-              <!-- Outfit-Schatten für Tiefe -->
-              <path d="M54 150 Q100 168 146 150 L150 185 L50 185 Z" fill="#000" opacity="0.12" />
-              <!-- Kragen-Andeutung -->
-              <path d="M82 152 Q100 162 118 152" stroke="#000" stroke-opacity="0.25" stroke-width="1.5" fill="none" />
+              <!-- Körper / Outfit (dynamisch via JS) -->
+              <g id="outfit-group"></g>
               <!-- Hals (tapered) -->
               <path id="neck" d="M87 128 L87 152 Q100 156 113 152 L113 128 Z" fill="#f5d0a9" />
               <!-- Halsschatten -->
@@ -344,6 +340,50 @@
 
           <div class="form-section">
             <h3>👕 Outfit &amp; Accessoires</h3>
+            <label>Outfit-Stil (40 Designs – scrolle!)
+              <div class="buttons hair-grid" id="outfit-style">
+                <button data-outfit="tshirt" class="active">👕 T-Shirt</button>
+                <button data-outfit="hoodie">🧥 Hoodie</button>
+                <button data-outfit="denim">👖 Jeansjacke</button>
+                <button data-outfit="sweater">🧶 Pulli</button>
+                <button data-outfit="tank">🎽 Tank-Top</button>
+                <button data-outfit="shirt">👔 Hemd</button>
+                <button data-outfit="polo">🏌️ Polo</button>
+                <button data-outfit="vneck">🔻 V-Ausschnitt</button>
+                <button data-outfit="turtleneck">🐢 Rollkragen</button>
+                <button data-outfit="stripes">〰️ Streifen</button>
+                <button data-outfit="suit">🤵 Anzug</button>
+                <button data-outfit="tuxedo">🎩 Smoking</button>
+                <button data-outfit="dress">👗 Kleid</button>
+                <button data-outfit="ballgown">💃 Ballkleid</button>
+                <button data-outfit="princess">👸 Prinzessin</button>
+                <button data-outfit="wizard">🧙 Zauberumhang</button>
+                <button data-outfit="superhero">🦸 Superheld</button>
+                <button data-outfit="armor">⚔️ Ritterrüstung</button>
+                <button data-outfit="ninja">🥷 Ninja</button>
+                <button data-outfit="pirate">🏴‍☠️ Pirat</button>
+                <button data-outfit="vampire">🧛 Vampir</button>
+                <button data-outfit="elven">🧝 Elfen</button>
+                <button data-outfit="angel">👼 Engel</button>
+                <button data-outfit="devil">😈 Teufel</button>
+                <button data-outfit="zombie">🧟 Zombie</button>
+                <button data-outfit="lab">🥼 Laborkittel</button>
+                <button data-outfit="doctor">🩺 Arzt</button>
+                <button data-outfit="chef">👨‍🍳 Koch</button>
+                <button data-outfit="military">🪖 Militär</button>
+                <button data-outfit="police">👮 Polizei</button>
+                <button data-outfit="firefighter">🚒 Feuerwehr</button>
+                <button data-outfit="school">🎓 Schuluniform</button>
+                <button data-outfit="cheerleader">📣 Cheerleader</button>
+                <button data-outfit="jersey">⚽ Sportshirt</button>
+                <button data-outfit="bartender">🍸 Barkeeper</button>
+                <button data-outfit="hawaiian">🌺 Hawaiihemd</button>
+                <button data-outfit="pajama">🌙 Pyjama</button>
+                <button data-outfit="spacesuit">👨‍🚀 Raumanzug</button>
+                <button data-outfit="kimono">🎌 Kimono</button>
+                <button data-outfit="toga">🏛️ Toga</button>
+              </div>
+            </label>
             <label>Outfit-Farbe
               <div class="swatches" id="outfit-swatches">
                 <button class="swatch" data-color="#3b82f6" style="background:#3b82f6"></button>
