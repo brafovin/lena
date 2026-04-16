@@ -45,9 +45,11 @@ const dk = (c, a = 0.3) => shade(c, -a);
 const lt = (c, a = 0.3) => shade(c, a);
 
 // ---------- Outfit-Stile (40) ----------
-// BODY: schlanker Torso – schmale Schultern, direkter Übergang vom Hals, keine dicke Brust
-const BODY = 'M48 160 Q68 150 88 158 Q100 170 112 158 Q132 150 152 160 Q154 195 146 228 L150 232 L50 232 L54 228 Q46 195 48 160 Z';
+// BODY: weiblicher Torso – Sanduhrform mit dezenter Brust, schmaler Taille und weicher Silhouette
+const BODY = 'M48 160 Q68 150 88 158 Q100 170 112 158 Q132 150 152 160 Q156 184 152 205 Q142 225 150 232 L50 232 Q58 225 48 205 Q44 184 48 160 Z';
 const BODY_SHADOW = '<path d="M50 164 Q100 180 150 164 L144 215 L56 215 Z" fill="#000" opacity="0.08"/>';
+// Brust-Andeutung (zeigt durch jedes Outfit die weibliche Silhouette)
+const BUST_CURVES = '<path d="M82 180 Q90 192 94 206" stroke="#000" stroke-opacity="0.18" stroke-width="1.3" fill="none"/><path d="M118 180 Q110 192 106 206" stroke="#000" stroke-opacity="0.18" stroke-width="1.3" fill="none"/><path d="M84 178 Q92 182 98 188" stroke="#fff" stroke-opacity="0.18" stroke-width="1" fill="none"/><path d="M116 178 Q108 182 102 188" stroke="#fff" stroke-opacity="0.18" stroke-width="1" fill="none"/>';
 
 const OUTFIT_STYLES = {
   tshirt:    c => `<path d="${BODY}" fill="${c}"/>${BODY_SHADOW}<path d="M82 152 Q100 162 118 152" stroke="#000" stroke-opacity="0.3" stroke-width="1.5" fill="none"/>`,
@@ -94,7 +96,8 @@ const OUTFIT_STYLES = {
 
 function renderOutfit(style, color) {
   const fn = OUTFIT_STYLES[style] || OUTFIT_STYLES.tshirt;
-  return fn(color);
+  // Outfit + weibliche Brust-Andeutung (zeigt sich durch das Outfit)
+  return fn(color) + BUST_CURVES;
 }
 
 const OUTFIT_KEYS = Object.keys(OUTFIT_STYLES);
@@ -454,11 +457,11 @@ function avatarSVG(c) {
     <ellipse cx="152" cy="215" rx="2" ry="14" fill="#000" opacity="0.1" />
     <path d="M34 258 Q42 261 52 258" stroke="#000" stroke-opacity="0.18" stroke-width="0.8" fill="none" />
     <path d="M148 258 Q158 261 166 258" stroke="#000" stroke-opacity="0.18" stroke-width="0.8" fill="none" />
-    <!-- Hose / Hüfte -->
-    <path d="M48 228 Q56 252 64 282 Q100 290 136 282 Q144 252 152 228 Z" fill="#374151" />
-    <rect x="50" y="228" width="100" height="5" fill="#1f2937" />
-    <path d="M48 232 Q56 254 64 282 L66 284 Q58 256 52 234 Z" fill="#000" opacity="0.15" />
-    <path d="M152 232 Q144 254 136 282 L134 284 Q142 256 148 234 Z" fill="#000" opacity="0.15" />
+    <!-- Hose / Hüfte (weibliche Rundung) -->
+    <path d="M50 228 Q42 252 58 282 Q100 290 142 282 Q158 252 150 228 Z" fill="#374151" />
+    <rect x="52" y="228" width="96" height="5" fill="#1f2937" />
+    <path d="M50 232 Q44 254 58 282 L60 284 Q50 256 54 234 Z" fill="#000" opacity="0.15" />
+    <path d="M150 232 Q156 254 142 282 L140 284 Q150 256 146 234 Z" fill="#000" opacity="0.15" />
     <!-- Beine (Hose) -->
     <path d="M64 280 Q66 330 70 385 Q72 410 80 420 L94 420 Q96 410 96 385 Q98 330 98 280 Z" fill="#374151" />
     <path d="M102 280 Q102 330 102 385 Q104 410 120 420 L134 420 Q136 410 136 385 Q134 330 136 280 Z" fill="#374151" />
