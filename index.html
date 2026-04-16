@@ -29,25 +29,66 @@
           <div class="preview-bg" id="preview-bg">
             <svg id="avatar" viewBox="0 0 200 240" xmlns="http://www.w3.org/2000/svg">
               <!-- Cape -->
-              <path id="cape" d="M60 150 Q100 260 140 150 L160 230 L40 230 Z" fill="#b91c1c" style="display:none" />
+              <path id="cape" d="M58 148 Q100 270 142 148 L170 230 L30 230 Z" fill="#b91c1c" style="display:none" />
               <!-- Körper / Outfit -->
-              <path id="outfit" d="M60 150 Q100 180 140 150 L160 230 L40 230 Z" fill="#3b82f6" />
-              <!-- Hals -->
-              <rect x="90" y="130" width="20" height="20" fill="#f5d0a9" id="neck" />
-              <!-- Kopf -->
-              <ellipse id="head" cx="100" cy="100" rx="40" ry="45" fill="#f5d0a9" />
-              <!-- Ohren -->
-              <ellipse cx="60" cy="105" rx="6" ry="10" class="ear" fill="#f5d0a9" />
-              <ellipse cx="140" cy="105" rx="6" ry="10" class="ear" fill="#f5d0a9" />
+              <path id="outfit" d="M54 150 Q100 175 146 150 L170 230 L30 230 Z" fill="#3b82f6" />
+              <!-- Outfit-Schatten für Tiefe -->
+              <path d="M54 150 Q100 168 146 150 L150 185 L50 185 Z" fill="#000" opacity="0.12" />
+              <!-- Kragen-Andeutung -->
+              <path d="M82 152 Q100 162 118 152" stroke="#000" stroke-opacity="0.25" stroke-width="1.5" fill="none" />
+              <!-- Hals (tapered) -->
+              <path id="neck" d="M87 128 L87 152 Q100 156 113 152 L113 128 Z" fill="#f5d0a9" />
+              <!-- Halsschatten -->
+              <path d="M87 145 Q100 152 113 145 L113 152 Q100 156 87 152 Z" fill="#000" opacity="0.18" />
+              <!-- Ohren (detaillierter) -->
+              <ellipse cx="58" cy="108" rx="7" ry="13" class="ear" fill="#f5d0a9" />
+              <ellipse cx="142" cy="108" rx="7" ry="13" class="ear" fill="#f5d0a9" />
+              <path d="M57 103 Q61 108 60 115 Q58 118 56 113 Z" fill="#000" opacity="0.2" />
+              <path d="M143 103 Q139 108 140 115 Q142 118 144 113 Z" fill="#000" opacity="0.2" />
+              <!-- Kopf (realistischer Oval) -->
+              <ellipse id="head" cx="100" cy="100" rx="42" ry="50" fill="#f5d0a9" />
+              <!-- Gesichtsschatten für Tiefe -->
+              <path d="M58 105 Q63 135 82 148 Q67 138 60 110 Z" fill="#000" opacity="0.08" />
+              <path d="M142 105 Q137 135 118 148 Q133 138 140 110 Z" fill="#000" opacity="0.08" />
+              <!-- Stirn-Highlight -->
+              <ellipse cx="100" cy="70" rx="18" ry="6" fill="#fff" opacity="0.2" />
               <!-- Haare -->
-              <path id="hair" d="M60 90 Q100 30 140 90 Q140 70 100 60 Q60 70 60 90 Z" fill="#3b2416" />
-              <!-- Augen -->
-              <ellipse class="eye-white" cx="85" cy="100" rx="6" ry="4" fill="#ffffff" />
-              <ellipse class="eye-white" cx="115" cy="100" rx="6" ry="4" fill="#ffffff" />
-              <circle class="eye" cx="85" cy="100" r="3" fill="#4a2c17" />
-              <circle class="eye" cx="115" cy="100" r="3" fill="#4a2c17" />
-              <!-- Mund -->
-              <path id="mouth" d="M88 120 Q100 128 112 120" stroke="#b91c1c" stroke-width="2" fill="none" stroke-linecap="round" />
+              <path id="hair" d="M58 95 Q55 48 100 44 Q145 48 142 95 Q140 72 115 62 Q105 70 100 64 Q95 70 85 62 Q60 72 58 95 Z" fill="#3b2416" />
+              <!-- Augenbrauen -->
+              <path id="brow-left" class="brow" d="M73 86 Q82 81 92 87" stroke="#3b2416" stroke-width="3" fill="none" stroke-linecap="round" />
+              <path id="brow-right" class="brow" d="M108 87 Q118 81 127 86" stroke="#3b2416" stroke-width="3" fill="none" stroke-linecap="round" />
+              <!-- Augenweiß (mandelförmig) -->
+              <path class="eye-white" d="M74 100 Q83 94 92 100 Q83 106 74 100 Z" fill="#ffffff" stroke="#8d6e52" stroke-width="0.6" />
+              <path class="eye-white" d="M108 100 Q117 94 126 100 Q117 106 108 100 Z" fill="#ffffff" stroke="#8d6e52" stroke-width="0.6" />
+              <!-- Iris -->
+              <circle class="eye" cx="83" cy="100" r="4" fill="#4a2c17" />
+              <circle class="eye" cx="117" cy="100" r="4" fill="#4a2c17" />
+              <!-- Pupillen -->
+              <circle class="pupil" cx="83" cy="100" r="1.8" fill="#000" />
+              <circle class="pupil" cx="117" cy="100" r="1.8" fill="#000" />
+              <!-- Augen-Highlights -->
+              <circle class="eye-hl" cx="85" cy="98" r="1.2" fill="#ffffff" />
+              <circle class="eye-hl" cx="119" cy="98" r="1.2" fill="#ffffff" />
+              <!-- Wimpern -->
+              <path d="M74 100 Q83 94 92 100" stroke="#1f1f1f" stroke-width="1.3" fill="none" stroke-linecap="round" />
+              <path d="M108 100 Q117 94 126 100" stroke="#1f1f1f" stroke-width="1.3" fill="none" stroke-linecap="round" />
+              <line x1="77" y1="95" x2="76" y2="92" stroke="#1f1f1f" stroke-width="1" stroke-linecap="round" />
+              <line x1="83" y1="94" x2="83" y2="90" stroke="#1f1f1f" stroke-width="1" stroke-linecap="round" />
+              <line x1="89" y1="95" x2="90" y2="92" stroke="#1f1f1f" stroke-width="1" stroke-linecap="round" />
+              <line x1="111" y1="95" x2="110" y2="92" stroke="#1f1f1f" stroke-width="1" stroke-linecap="round" />
+              <line x1="117" y1="94" x2="117" y2="90" stroke="#1f1f1f" stroke-width="1" stroke-linecap="round" />
+              <line x1="123" y1="95" x2="124" y2="92" stroke="#1f1f1f" stroke-width="1" stroke-linecap="round" />
+              <!-- Nase -->
+              <path d="M100 108 Q96 120 99 125 Q102 127 104 125" stroke="#8d6e52" stroke-width="1.1" fill="none" stroke-linecap="round" stroke-opacity="0.7" />
+              <ellipse cx="97" cy="124" rx="1.5" ry="0.9" fill="#000" opacity="0.25" />
+              <ellipse cx="103" cy="124" rx="1.5" ry="0.9" fill="#000" opacity="0.25" />
+              <!-- Lippen (oben dunkler, unten heller) -->
+              <path id="upper-lip" d="M84 133 Q92 128 100 132 Q108 128 116 133 Q108 136 100 136 Q92 136 84 133 Z" fill="#be185d" />
+              <path id="lower-lip" d="M84 133 Q92 145 100 145 Q108 145 116 133 Q108 140 100 141 Q92 140 84 133 Z" fill="#ec4899" />
+              <!-- Lippen-Highlight -->
+              <path d="M94 138 Q100 140 106 138" stroke="#fff" stroke-opacity="0.4" stroke-width="0.8" fill="none" stroke-linecap="round" />
+              <!-- Mund-Ausdruckslinie -->
+              <path id="mouth" d="M88 136 Q100 141 112 136" stroke="#831843" stroke-width="1" fill="none" stroke-linecap="round" />
               <!-- Brille -->
               <g id="glasses" style="display:none">
                 <circle cx="85" cy="100" r="10" stroke="#1f2937" stroke-width="2" fill="none" />

@@ -83,35 +83,58 @@ function setupButtonGroup(containerId, stateKey, applyFn, multi = false) {
 }
 
 // ---------- Avatar aktualisieren ----------
+const HAIR_STYLES = {
+  short:  'M58 95 Q55 48 100 44 Q145 48 142 95 Q140 72 115 62 Q105 70 100 64 Q95 70 85 62 Q60 72 58 95 Z',
+  long:   'M52 100 Q50 38 100 34 Q150 38 148 100 L155 210 Q148 215 142 175 Q138 110 100 72 Q62 110 58 175 Q52 215 45 210 Z',
+  curly:  'M55 95 Q44 78 58 65 Q58 45 82 55 Q88 35 100 48 Q112 35 118 55 Q142 45 142 65 Q156 78 145 95 Q150 75 118 68 Q112 58 100 65 Q88 58 82 68 Q50 75 55 95 Z',
+  bald:   '',
+  mohawk: 'M88 28 Q100 16 112 28 L118 90 L82 90 Z',
+};
+
+const MOUTH_SHAPES = {
+  smile: {
+    upper: 'M84 133 Q92 128 100 132 Q108 128 116 133 Q108 136 100 136 Q92 136 84 133 Z',
+    lower: 'M84 133 Q92 148 100 148 Q108 148 116 133 Q108 142 100 143 Q92 142 84 133 Z',
+    line:  'M88 138 Q100 144 112 138',
+  },
+  neutral: {
+    upper: 'M84 135 Q92 131 100 134 Q108 131 116 135 Q108 137 100 137 Q92 137 84 135 Z',
+    lower: 'M84 135 Q92 141 100 141 Q108 141 116 135 Q108 139 100 139 Q92 139 84 135 Z',
+    line:  'M88 137 L112 137',
+  },
+  smirk: {
+    upper: 'M84 136 Q92 132 100 134 Q108 128 118 131 Q110 135 100 136 Q92 137 84 136 Z',
+    lower: 'M84 136 Q92 144 100 143 Q112 142 118 131 Q110 139 100 140 Q92 140 84 136 Z',
+    line:  'M88 138 Q100 140 116 131',
+  },
+  sad: {
+    upper: 'M84 136 Q92 138 100 136 Q108 138 116 136 Q108 134 100 134 Q92 134 84 136 Z',
+    lower: 'M84 136 Q92 130 100 131 Q108 130 116 136 Q108 140 100 141 Q92 140 84 136 Z',
+    line:  'M86 134 Q100 128 114 134',
+  },
+};
+
 function updateAvatar() {
   document.getElementById('head').setAttribute('fill', state.skin);
   document.getElementById('neck').setAttribute('fill', state.skin);
   document.querySelectorAll('.ear').forEach(e => e.setAttribute('fill', state.skin));
   document.getElementById('outfit').setAttribute('fill', state.outfit);
+  // Iris
   document.querySelectorAll('.eye').forEach(e => e.setAttribute('fill', state.eye));
 
-  // Haare nach Stil
+  // Haare
   const hair = document.getElementById('hair');
   hair.setAttribute('fill', state.hair);
-  const styles = {
-    short:  'M60 90 Q100 30 140 90 Q140 70 100 60 Q60 70 60 90 Z',
-    long:   'M55 95 Q100 20 145 95 L150 170 L140 170 Q140 100 100 85 Q60 100 60 170 L50 170 Z',
-    curly:  'M55 95 Q60 55 80 55 Q90 35 100 55 Q110 35 120 55 Q140 55 145 95 Q145 75 100 60 Q55 75 55 95 Z',
-    bald:   '',
-    mohawk: 'M90 30 L110 30 L115 90 L85 90 Z',
-  };
-  hair.setAttribute('d', styles[state.hairStyle] || styles.short);
+  hair.setAttribute('d', HAIR_STYLES[state.hairStyle] || HAIR_STYLES.short);
   hair.style.display = state.hairStyle === 'bald' ? 'none' : '';
+  // Augenbrauen synchron zur Haarfarbe
+  document.querySelectorAll('.brow').forEach(b => b.setAttribute('stroke', state.hair));
 
-  // Mund
-  const mouth = document.getElementById('mouth');
-  const mouths = {
-    smile:   'M88 120 Q100 130 112 120',
-    neutral: 'M88 122 L112 122',
-    smirk:   'M88 122 Q100 128 112 118',
-    sad:     'M88 128 Q100 118 112 128',
-  };
-  mouth.setAttribute('d', mouths[state.mouth] || mouths.smile);
+  // Mund & Lippen
+  const m = MOUTH_SHAPES[state.mouth] || MOUTH_SHAPES.smile;
+  document.getElementById('mouth').setAttribute('d', m.line);
+  document.getElementById('upper-lip').setAttribute('d', m.upper);
+  document.getElementById('lower-lip').setAttribute('d', m.lower);
 
   // Accessoires
   ACC_KEYS.forEach(k => {
@@ -327,29 +350,28 @@ document.getElementById('random-btn').addEventListener('click', randomize);
 
 // ---------- Galerie ----------
 function avatarSVG(c) {
-  const hairPaths = {
-    short: 'M60 90 Q100 30 140 90 Q140 70 100 60 Q60 70 60 90 Z',
-    long: 'M55 95 Q100 20 145 95 L150 170 L140 170 Q140 100 100 85 Q60 100 60 170 L50 170 Z',
-    curly: 'M55 95 Q60 55 80 55 Q90 35 100 55 Q110 35 120 55 Q140 55 145 95 Q145 75 100 60 Q55 75 55 95 Z',
-    bald: '',
-    mohawk: 'M90 30 L110 30 L115 90 L85 90 Z',
-  };
-  const mouths = {
-    smile: 'M88 120 Q100 130 112 120',
-    neutral: 'M88 122 L112 122',
-    smirk: 'M88 122 Q100 128 112 118',
-    sad: 'M88 128 Q100 118 112 128',
-  };
+  const hairPaths = HAIR_STYLES;
+  const m = MOUTH_SHAPES[c.mouth] || MOUTH_SHAPES.smile;
   const a = c.acc || {};
   return `<svg viewBox="0 0 200 240" xmlns="http://www.w3.org/2000/svg">
     ${a.wings ? '<g><path d="M40 150 Q5 135 15 185 Q35 185 55 170 Z" fill="#fef3c7" stroke="#fbbf24" stroke-width="1.5"/><path d="M160 150 Q195 135 185 185 Q165 185 145 170 Z" fill="#fef3c7" stroke="#fbbf24" stroke-width="1.5"/></g>' : ''}
-    ${a.cape ? '<path d="M60 150 Q100 260 140 150 L160 230 L40 230 Z" fill="#b91c1c" />' : ''}
-    <path d="M60 150 Q100 180 140 150 L160 230 L40 230 Z" fill="${c.outfit}" />
-    <rect x="90" y="130" width="20" height="20" fill="${c.skin}" />
-    <ellipse cx="100" cy="100" rx="40" ry="45" fill="${c.skin}" />
-    <ellipse cx="60" cy="105" rx="6" ry="10" fill="${c.skin}" />
-    <ellipse cx="140" cy="105" rx="6" ry="10" fill="${c.skin}" />
+    ${a.cape ? '<path d="M58 148 Q100 270 142 148 L170 230 L30 230 Z" fill="#b91c1c" />' : ''}
+    <path d="M54 150 Q100 175 146 150 L170 230 L30 230 Z" fill="${c.outfit}" />
+    <path d="M54 150 Q100 168 146 150 L150 185 L50 185 Z" fill="#000" opacity="0.12" />
+    <path d="M82 152 Q100 162 118 152" stroke="#000" stroke-opacity="0.25" stroke-width="1.5" fill="none" />
+    <path d="M87 128 L87 152 Q100 156 113 152 L113 128 Z" fill="${c.skin}" />
+    <path d="M87 145 Q100 152 113 145 L113 152 Q100 156 87 152 Z" fill="#000" opacity="0.18" />
+    <ellipse cx="58" cy="108" rx="7" ry="13" fill="${c.skin}" />
+    <ellipse cx="142" cy="108" rx="7" ry="13" fill="${c.skin}" />
+    <path d="M57 103 Q61 108 60 115 Q58 118 56 113 Z" fill="#000" opacity="0.2" />
+    <path d="M143 103 Q139 108 140 115 Q142 118 144 113 Z" fill="#000" opacity="0.2" />
+    <ellipse cx="100" cy="100" rx="42" ry="50" fill="${c.skin}" />
+    <path d="M58 105 Q63 135 82 148 Q67 138 60 110 Z" fill="#000" opacity="0.08" />
+    <path d="M142 105 Q137 135 118 148 Q133 138 140 110 Z" fill="#000" opacity="0.08" />
+    <ellipse cx="100" cy="70" rx="18" ry="6" fill="#fff" opacity="0.2" />
     ${c.hairStyle !== 'bald' ? `<path d="${hairPaths[c.hairStyle] || hairPaths.short}" fill="${c.hair}" />` : ''}
+    <path d="M73 86 Q82 81 92 87" stroke="${c.hair}" stroke-width="3" fill="none" stroke-linecap="round" />
+    <path d="M108 87 Q118 81 127 86" stroke="${c.hair}" stroke-width="3" fill="none" stroke-linecap="round" />
     ${a.ears ? '<g><path d="M70 72 L62 40 L86 62 Z" fill="#78350f"/><path d="M130 72 L138 40 L114 62 Z" fill="#78350f"/><path d="M72 68 L70 50 L82 60 Z" fill="#fbbf24"/><path d="M128 68 L130 50 L118 60 Z" fill="#fbbf24"/></g>' : ''}
     ${a.horns ? '<g><path d="M72 65 Q66 40 82 58 Z" fill="#7f1d1d"/><path d="M128 65 Q134 40 118 58 Z" fill="#7f1d1d"/></g>' : ''}
     ${a.halo ? '<ellipse cx="100" cy="38" rx="48" ry="8" fill="none" stroke="#fbbf24" stroke-width="3"/>' : ''}
@@ -358,13 +380,25 @@ function avatarSVG(c) {
     ${a.bow ? '<g><path d="M90 52 L78 42 L78 62 Z" fill="#ec4899"/><path d="M110 52 L122 42 L122 62 Z" fill="#ec4899"/><circle cx="100" cy="52" r="5" fill="#be185d"/></g>' : ''}
     ${a.headband ? '<g><rect x="56" y="75" width="88" height="10" fill="#dc2626"/><circle cx="100" cy="80" r="4" fill="#fbbf24"/></g>' : ''}
     ${a.headphones ? '<g><path d="M55 75 Q100 25 145 75" stroke="#1f2937" stroke-width="5" fill="none"/><rect x="46" y="75" width="16" height="28" rx="5" fill="#1f2937"/><rect x="138" y="75" width="16" height="28" rx="5" fill="#1f2937"/></g>' : ''}
-    <ellipse cx="85" cy="100" rx="6" ry="4" fill="#fff" />
-    <ellipse cx="115" cy="100" rx="6" ry="4" fill="#fff" />
-    <circle cx="85" cy="100" r="3" fill="${c.eye}" />
-    <circle cx="115" cy="100" r="3" fill="${c.eye}" />
-    ${a.freckles ? '<g><circle cx="80" cy="108" r="1.2" fill="#78350f"/><circle cx="88" cy="112" r="1.2" fill="#78350f"/><circle cx="112" cy="112" r="1.2" fill="#78350f"/><circle cx="120" cy="108" r="1.2" fill="#78350f"/><circle cx="95" cy="114" r="1.2" fill="#78350f"/><circle cx="105" cy="114" r="1.2" fill="#78350f"/></g>' : ''}
-    ${a.blush ? '<g><ellipse cx="75" cy="112" rx="7" ry="3" fill="#f87171" opacity="0.55"/><ellipse cx="125" cy="112" rx="7" ry="3" fill="#f87171" opacity="0.55"/></g>' : ''}
-    <path d="${mouths[c.mouth] || mouths.smile}" stroke="#b91c1c" stroke-width="2" fill="none" stroke-linecap="round" />
+    <path d="M74 100 Q83 94 92 100 Q83 106 74 100 Z" fill="#fff" stroke="#8d6e52" stroke-width="0.6" />
+    <path d="M108 100 Q117 94 126 100 Q117 106 108 100 Z" fill="#fff" stroke="#8d6e52" stroke-width="0.6" />
+    <circle cx="83" cy="100" r="4" fill="${c.eye}" />
+    <circle cx="117" cy="100" r="4" fill="${c.eye}" />
+    <circle cx="83" cy="100" r="1.8" fill="#000" />
+    <circle cx="117" cy="100" r="1.8" fill="#000" />
+    <circle cx="85" cy="98" r="1.2" fill="#fff" />
+    <circle cx="119" cy="98" r="1.2" fill="#fff" />
+    <path d="M74 100 Q83 94 92 100" stroke="#1f1f1f" stroke-width="1.3" fill="none" stroke-linecap="round" />
+    <path d="M108 100 Q117 94 126 100" stroke="#1f1f1f" stroke-width="1.3" fill="none" stroke-linecap="round" />
+    <path d="M100 108 Q96 120 99 125 Q102 127 104 125" stroke="#8d6e52" stroke-width="1.1" fill="none" stroke-linecap="round" stroke-opacity="0.7" />
+    <ellipse cx="97" cy="124" rx="1.5" ry="0.9" fill="#000" opacity="0.25" />
+    <ellipse cx="103" cy="124" rx="1.5" ry="0.9" fill="#000" opacity="0.25" />
+    ${a.freckles ? '<g><circle cx="78" cy="112" r="1.2" fill="#78350f"/><circle cx="86" cy="116" r="1.2" fill="#78350f"/><circle cx="114" cy="116" r="1.2" fill="#78350f"/><circle cx="122" cy="112" r="1.2" fill="#78350f"/><circle cx="95" cy="118" r="1.2" fill="#78350f"/><circle cx="105" cy="118" r="1.2" fill="#78350f"/></g>' : ''}
+    ${a.blush ? '<g><ellipse cx="73" cy="118" rx="8" ry="3.5" fill="#f87171" opacity="0.55"/><ellipse cx="127" cy="118" rx="8" ry="3.5" fill="#f87171" opacity="0.55"/></g>' : ''}
+    <path d="${m.upper}" fill="#be185d" />
+    <path d="${m.lower}" fill="#ec4899" />
+    <path d="M94 138 Q100 140 106 138" stroke="#fff" stroke-opacity="0.4" stroke-width="0.8" fill="none" stroke-linecap="round" />
+    <path d="${m.line}" stroke="#831843" stroke-width="1" fill="none" stroke-linecap="round" />
     ${a.fangs ? '<g><path d="M94 122 L92 132 L97 127 Z" fill="#fff" stroke="#1f2937" stroke-width="0.5"/><path d="M106 122 L108 132 L103 127 Z" fill="#fff" stroke="#1f2937" stroke-width="0.5"/></g>' : ''}
     ${a.beard ? '<path d="M72 115 Q100 152 128 115 Q122 142 100 148 Q78 142 72 115 Z" fill="#3b2416"/>' : ''}
     ${a.whiskers ? '<g><line x1="62" y1="115" x2="84" y2="118" stroke="#1f2937" stroke-width="1"/><line x1="62" y1="120" x2="84" y2="120" stroke="#1f2937" stroke-width="1"/><line x1="138" y1="115" x2="116" y2="118" stroke="#1f2937" stroke-width="1"/><line x1="138" y1="120" x2="116" y2="120" stroke="#1f2937" stroke-width="1"/><ellipse cx="100" cy="115" rx="3" ry="2" fill="#1f2937"/></g>' : ''}
