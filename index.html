@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Meine Charakter – Erschaffe deine Helden</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="app-header">
+    <div class="logo">
+      <span class="logo-icon">✨</span>
+      <h1>Meine Charakter</h1>
+    </div>
+    <p class="tagline">Erschaffe deine Lieblingscharaktere aus Serien &amp; Filmen – ganz nach deiner Fantasie!</p>
+    <nav class="tabs">
+      <button class="tab active" data-tab="create">🎨 Erstellen</button>
+      <button class="tab" data-tab="gallery">🖼️ Meine Galerie <span id="gallery-count" class="badge">0</span></button>
+      <button class="tab" data-tab="inspiration">💡 Inspiration</button>
+    </nav>
+  </header>
+
+  <main>
+    <!-- ERSTELLEN -->
+    <section id="create" class="view active">
+      <div class="create-grid">
+        <!-- Vorschau -->
+        <div class="preview-card">
+          <div class="preview-bg" id="preview-bg">
+            <svg id="avatar" viewBox="0 0 200 240" xmlns="http://www.w3.org/2000/svg">
+              <!-- Cape -->
+              <path id="cape" d="M60 150 Q100 260 140 150 L160 230 L40 230 Z" fill="#b91c1c" style="display:none" />
+              <!-- Körper / Outfit -->
+              <path id="outfit" d="M60 150 Q100 180 140 150 L160 230 L40 230 Z" fill="#3b82f6" />
+              <!-- Hals -->
+              <rect x="90" y="130" width="20" height="20" fill="#f5d0a9" id="neck" />
+              <!-- Kopf -->
+              <ellipse id="head" cx="100" cy="100" rx="40" ry="45" fill="#f5d0a9" />
+              <!-- Ohren -->
+              <ellipse cx="60" cy="105" rx="6" ry="10" class="ear" fill="#f5d0a9" />
+              <ellipse cx="140" cy="105" rx="6" ry="10" class="ear" fill="#f5d0a9" />
+              <!-- Haare -->
+              <path id="hair" d="M60 90 Q100 30 140 90 Q140 70 100 60 Q60 70 60 90 Z" fill="#3b2416" />
+              <!-- Augen -->
+              <ellipse class="eye-white" cx="85" cy="100" rx="6" ry="4" fill="#ffffff" />
+              <ellipse class="eye-white" cx="115" cy="100" rx="6" ry="4" fill="#ffffff" />
+              <circle class="eye" cx="85" cy="100" r="3" fill="#4a2c17" />
+              <circle class="eye" cx="115" cy="100" r="3" fill="#4a2c17" />
+              <!-- Mund -->
+              <path id="mouth" d="M88 120 Q100 128 112 120" stroke="#b91c1c" stroke-width="2" fill="none" stroke-linecap="round" />
+              <!-- Brille -->
+              <g id="glasses" style="display:none">
+                <circle cx="85" cy="100" r="10" stroke="#1f2937" stroke-width="2" fill="none" />
+                <circle cx="115" cy="100" r="10" stroke="#1f2937" stroke-width="2" fill="none" />
+                <line x1="95" y1="100" x2="105" y2="100" stroke="#1f2937" stroke-width="2" />
+              </g>
+              <!-- Hut -->
+              <g id="hat" style="display:none">
+                <ellipse cx="100" cy="60" rx="50" ry="8" fill="#1f2937" />
+                <path d="M70 60 L80 20 L120 20 L130 60 Z" fill="#1f2937" />
+                <rect x="72" y="55" width="56" height="5" fill="#fbbf24" />
+              </g>
+              <!-- Narbe -->
+              <path id="scar" d="M108 80 L112 88 L108 94" stroke="#b91c1c" stroke-width="1.5" fill="none" style="display:none" />
+              <!-- Maske -->
+              <g id="mask" style="display:none">
+                <rect x="60" y="92" width="80" height="20" rx="10" fill="#1f2937" />
+              </g>
+            </svg>
+          </div>
+          <div class="preview-name">
+            <h2 id="preview-name">Namenlose Heldin</h2>
+            <p id="preview-universe">✨ Unbekanntes Universum</p>
+          </div>
+          <div class="preview-traits" id="preview-traits"></div>
+        </div>
+
+        <!-- Formular -->
+        <div class="form-card">
+          <div class="form-section">
+            <h3>📝 Grundlagen</h3>
+            <label>Name deines Charakters
+              <input type="text" id="name" placeholder="z.B. Luna Sternenstaub" maxlength="40" />
+            </label>
+            <label>Universum / Serie
+              <select id="universe">
+                <option value="">— Wähle oder tippe selbst —</option>
+                <option>Harry Potter</option>
+                <option>Marvel</option>
+                <option>DC Comics</option>
+                <option>Star Wars</option>
+                <option>Herr der Ringe</option>
+                <option>Disney</option>
+                <option>Anime / Manga</option>
+                <option>Stranger Things</option>
+                <option>Die Tribute von Panem</option>
+                <option>Percy Jackson</option>
+                <option>Game of Thrones</option>
+                <option>Avatar – Herr der Elemente</option>
+                <option>Pokémon</option>
+                <option>Eigenes Universum</option>
+              </select>
+            </label>
+            <label>Alter
+              <input type="number" id="age" placeholder="z.B. 17" min="0" max="9999" />
+            </label>
+          </div>
+
+          <div class="form-section">
+            <h3>🎨 Aussehen</h3>
+            <label>Hautfarbe
+              <div class="swatches" id="skin-swatches">
+                <button class="swatch" data-color="#f5d0a9" style="background:#f5d0a9"></button>
+                <button class="swatch" data-color="#e8b888" style="background:#e8b888"></button>
+                <button class="swatch" data-color="#c68863" style="background:#c68863"></button>
+                <button class="swatch" data-color="#8d5524" style="background:#8d5524"></button>
+                <button class="swatch" data-color="#5c3317" style="background:#5c3317"></button>
+                <button class="swatch" data-color="#c2e0f2" style="background:#c2e0f2" title="Fantasie: Blau"></button>
+                <button class="swatch" data-color="#d1f5c4" style="background:#d1f5c4" title="Fantasie: Grün"></button>
+              </div>
+            </label>
+            <label>Haarfarbe
+              <div class="swatches" id="hair-swatches">
+                <button class="swatch" data-color="#3b2416" style="background:#3b2416"></button>
+                <button class="swatch" data-color="#1f1f1f" style="background:#1f1f1f"></button>
+                <button class="swatch" data-color="#d4a017" style="background:#d4a017"></button>
+                <button class="swatch" data-color="#c97d3d" style="background:#c97d3d"></button>
+                <button class="swatch" data-color="#b91c1c" style="background:#b91c1c"></button>
+                <button class="swatch" data-color="#ffffff" style="background:#ffffff"></button>
+                <button class="swatch" data-color="#ec4899" style="background:#ec4899"></button>
+                <button class="swatch" data-color="#8b5cf6" style="background:#8b5cf6"></button>
+                <button class="swatch" data-color="#06b6d4" style="background:#06b6d4"></button>
+              </div>
+            </label>
+            <label>Frisur
+              <div class="buttons" id="hair-style">
+                <button data-style="short" class="active">Kurz</button>
+                <button data-style="long">Lang</button>
+                <button data-style="curly">Lockig</button>
+                <button data-style="bald">Glatze</button>
+                <button data-style="mohawk">Mohawk</button>
+              </div>
+            </label>
+            <label>Augenfarbe
+              <div class="swatches" id="eye-swatches">
+                <button class="swatch" data-color="#4a2c17" style="background:#4a2c17"></button>
+                <button class="swatch" data-color="#2563eb" style="background:#2563eb"></button>
+                <button class="swatch" data-color="#16a34a" style="background:#16a34a"></button>
+                <button class="swatch" data-color="#a855f7" style="background:#a855f7"></button>
+                <button class="swatch" data-color="#eab308" style="background:#eab308"></button>
+                <button class="swatch" data-color="#dc2626" style="background:#dc2626" title="Vampir"></button>
+                <button class="swatch" data-color="#f97316" style="background:#f97316"></button>
+              </div>
+            </label>
+            <label>Gesichtsausdruck
+              <div class="buttons" id="mouth-style">
+                <button data-mouth="smile" class="active">Lächeln</button>
+                <button data-mouth="neutral">Neutral</button>
+                <button data-mouth="smirk">Grinsen</button>
+                <button data-mouth="sad">Traurig</button>
+              </div>
+            </label>
+          </div>
+
+          <div class="form-section">
+            <h3>👕 Outfit &amp; Accessoires</h3>
+            <label>Outfit-Farbe
+              <div class="swatches" id="outfit-swatches">
+                <button class="swatch" data-color="#3b82f6" style="background:#3b82f6"></button>
+                <button class="swatch" data-color="#dc2626" style="background:#dc2626"></button>
+                <button class="swatch" data-color="#16a34a" style="background:#16a34a"></button>
+                <button class="swatch" data-color="#1f2937" style="background:#1f2937"></button>
+                <button class="swatch" data-color="#fbbf24" style="background:#fbbf24"></button>
+                <button class="swatch" data-color="#ec4899" style="background:#ec4899"></button>
+                <button class="swatch" data-color="#7c3aed" style="background:#7c3aed"></button>
+                <button class="swatch" data-color="#ffffff" style="background:#ffffff"></button>
+              </div>
+            </label>
+            <label>Accessoires
+              <div class="checkboxes">
+                <label class="check"><input type="checkbox" id="acc-glasses" /> 🤓 Brille</label>
+                <label class="check"><input type="checkbox" id="acc-hat" /> 🎩 Hut</label>
+                <label class="check"><input type="checkbox" id="acc-cape" /> 🦸 Umhang</label>
+                <label class="check"><input type="checkbox" id="acc-scar" /> ⚡ Narbe</label>
+                <label class="check"><input type="checkbox" id="acc-mask" /> 🥷 Maske</label>
+              </div>
+            </label>
+            <label>Hintergrund
+              <div class="swatches bg-swatches" id="bg-swatches">
+                <button class="swatch" data-bg="linear-gradient(135deg,#f472b6,#a78bfa)" style="background:linear-gradient(135deg,#f472b6,#a78bfa)"></button>
+                <button class="swatch" data-bg="linear-gradient(135deg,#60a5fa,#22d3ee)" style="background:linear-gradient(135deg,#60a5fa,#22d3ee)"></button>
+                <button class="swatch" data-bg="linear-gradient(135deg,#fbbf24,#f97316)" style="background:linear-gradient(135deg,#fbbf24,#f97316)"></button>
+                <button class="swatch" data-bg="linear-gradient(135deg,#0f172a,#334155)" style="background:linear-gradient(135deg,#0f172a,#334155)"></button>
+                <button class="swatch" data-bg="linear-gradient(135deg,#16a34a,#84cc16)" style="background:linear-gradient(135deg,#16a34a,#84cc16)"></button>
+                <button class="swatch" data-bg="linear-gradient(135deg,#ef4444,#fbbf24)" style="background:linear-gradient(135deg,#ef4444,#fbbf24)"></button>
+              </div>
+            </label>
+          </div>
+
+          <div class="form-section">
+            <h3>⚡ Persönlichkeit &amp; Kräfte</h3>
+            <label>Superkraft / Besondere Fähigkeit
+              <input type="text" id="power" placeholder="z.B. Zeit anhalten, Feuermagie, Gedankenlesen" maxlength="80" />
+            </label>
+            <label>Persönlichkeitsmerkmale (Mehrfachauswahl)
+              <div class="buttons multi" id="traits">
+                <button data-trait="Mutig">Mutig</button>
+                <button data-trait="Klug">Klug</button>
+                <button data-trait="Lustig">Lustig</button>
+                <button data-trait="Geheimnisvoll">Geheimnisvoll</button>
+                <button data-trait="Loyal">Loyal</button>
+                <button data-trait="Chaotisch">Chaotisch</button>
+                <button data-trait="Romantisch">Romantisch</button>
+                <button data-trait="Stark">Stark</button>
+                <button data-trait="Schüchtern">Schüchtern</button>
+                <button data-trait="Rebellisch">Rebellisch</button>
+              </div>
+            </label>
+            <label>Hintergrundgeschichte
+              <textarea id="story" placeholder="Erzähle die Geschichte deines Charakters..." maxlength="500" rows="4"></textarea>
+            </label>
+          </div>
+
+          <div class="actions">
+            <button class="btn btn-secondary" id="random-btn">🎲 Zufällig</button>
+            <button class="btn btn-primary" id="save-btn">💾 Charakter speichern</button>
+            <button class="btn btn-ghost" id="reset-btn">🔄 Zurücksetzen</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- GALERIE -->
+    <section id="gallery" class="view">
+      <h2>🖼️ Meine Charakter-Sammlung</h2>
+      <p class="hint">Hier sind all deine erschaffenen Helden. Klicke auf einen, um ihn zu bearbeiten.</p>
+      <div id="gallery-grid" class="gallery-grid"></div>
+      <div id="gallery-empty" class="empty-state">
+        <p>🌟 Noch keine Charaktere! Erschaffe deinen ersten Helden im Reiter „Erstellen".</p>
+      </div>
+    </section>
+
+    <!-- INSPIRATION -->
+    <section id="inspiration" class="view">
+      <h2>💡 Lass dich inspirieren</h2>
+      <p class="hint">Wähle einen Steckbrief als Startpunkt – dann kannst du ihn nach deinen Vorstellungen verändern!</p>
+      <div id="inspiration-grid" class="inspiration-grid"></div>
+    </section>
+  </main>
+
+  <!-- Toast -->
+  <div id="toast" class="toast"></div>
+
+  <footer>
+    <p>✨ Meine Charakter – erschaffen mit Fantasie &amp; Code</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
