@@ -45,9 +45,9 @@ const dk = (c, a = 0.3) => shade(c, -a);
 const lt = (c, a = 0.3) => shade(c, a);
 
 // ---------- Outfit-Stile (40) ----------
-// BODY: realistischer Torso – breite Schultern, leichte V-Ausschnitt-Andeutung, schmale Taille, Hüftflare
-const BODY = 'M28 160 Q50 148 72 154 Q100 174 128 154 Q150 148 172 160 Q178 200 168 225 L172 232 L28 232 L32 225 Q22 200 28 160 Z';
-const BODY_SHADOW = '<path d="M30 164 Q100 184 170 164 L162 215 L38 215 Z" fill="#000" opacity="0.08"/>';
+// BODY: schlanker Torso – schmale Schultern, direkter Übergang vom Hals, keine dicke Brust
+const BODY = 'M48 160 Q68 150 88 158 Q100 170 112 158 Q132 150 152 160 Q154 195 146 228 L150 232 L50 232 L54 228 Q46 195 48 160 Z';
+const BODY_SHADOW = '<path d="M50 164 Q100 180 150 164 L144 215 L56 215 Z" fill="#000" opacity="0.08"/>';
 
 const OUTFIT_STYLES = {
   tshirt:    c => `<path d="${BODY}" fill="${c}"/>${BODY_SHADOW}<path d="M82 152 Q100 162 118 152" stroke="#000" stroke-opacity="0.3" stroke-width="1.5" fill="none"/>`,
@@ -192,34 +192,18 @@ const HAIR_STYLES = {
 };
 
 const MOUTH_SHAPES = {
-  smile: {
-    upper: 'M84 133 Q92 128 100 132 Q108 128 116 133 Q108 136 100 136 Q92 136 84 133 Z',
-    lower: 'M84 133 Q92 148 100 148 Q108 148 116 133 Q108 142 100 143 Q92 142 84 133 Z',
-    line:  'M88 138 Q100 144 112 138',
-  },
-  neutral: {
-    upper: 'M84 135 Q92 131 100 134 Q108 131 116 135 Q108 137 100 137 Q92 137 84 135 Z',
-    lower: 'M84 135 Q92 141 100 141 Q108 141 116 135 Q108 139 100 139 Q92 139 84 135 Z',
-    line:  'M88 137 L112 137',
-  },
-  smirk: {
-    upper: 'M84 136 Q92 132 100 134 Q108 128 118 131 Q110 135 100 136 Q92 137 84 136 Z',
-    lower: 'M84 136 Q92 144 100 143 Q112 142 118 131 Q110 139 100 140 Q92 140 84 136 Z',
-    line:  'M88 138 Q100 140 116 131',
-  },
-  sad: {
-    upper: 'M84 136 Q92 138 100 136 Q108 138 116 136 Q108 134 100 134 Q92 134 84 136 Z',
-    lower: 'M84 136 Q92 130 100 131 Q108 130 116 136 Q108 140 100 141 Q92 140 84 136 Z',
-    line:  'M86 134 Q100 128 114 134',
-  },
+  smile:   { line: 'M88 138 Q100 144 112 138' },
+  neutral: { line: 'M88 137 L112 137' },
+  smirk:   { line: 'M88 138 Q100 140 116 131' },
+  sad:     { line: 'M86 134 Q100 128 114 134' },
 };
 
 function updateAvatar() {
   document.getElementById('head').setAttribute('fill', state.skin);
   document.getElementById('neck').setAttribute('fill', state.skin);
   document.querySelectorAll('.ear').forEach(e => e.setAttribute('fill', state.skin));
-  // Körperteile mit Hautfarbe (Hüfte, Beine, Arme, Hände)
-  ['hips', 'leg-left', 'leg-right', 'arm-left', 'arm-right', 'hand-left', 'hand-right'].forEach(id => {
+  // Körperteile mit Hautfarbe (nur Arme und Hände – Hose/Beine bleiben Hosenfarbe)
+  ['arm-left', 'arm-right', 'hand-left', 'hand-right'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.setAttribute('fill', state.skin);
   });
@@ -235,11 +219,9 @@ function updateAvatar() {
   // Augenbrauen synchron zur Haarfarbe
   document.querySelectorAll('.brow').forEach(b => b.setAttribute('stroke', state.hair));
 
-  // Mund & Lippen
+  // Mund-Ausdruck
   const m = MOUTH_SHAPES[state.mouth] || MOUTH_SHAPES.smile;
   document.getElementById('mouth').setAttribute('d', m.line);
-  document.getElementById('upper-lip').setAttribute('d', m.upper);
-  document.getElementById('lower-lip').setAttribute('d', m.lower);
 
   // Accessoires
   ACC_KEYS.forEach(k => {
@@ -465,44 +447,40 @@ function avatarSVG(c) {
   return `<svg viewBox="0 0 200 440" xmlns="http://www.w3.org/2000/svg">
     ${a.wings ? '<g><path d="M40 150 Q5 135 15 185 Q35 185 55 170 Z" fill="#fef3c7" stroke="#fbbf24" stroke-width="1.5"/><path d="M160 150 Q195 135 185 185 Q165 185 145 170 Z" fill="#fef3c7" stroke="#fbbf24" stroke-width="1.5"/></g>' : ''}
     ${a.cape ? '<path d="M58 148 Q100 280 142 148 L172 295 L28 295 Z" fill="#b91c1c" />' : ''}
-    <!-- Arme -->
-    <path d="M30 168 Q16 205 20 252 Q24 285 32 305 L50 305 Q48 282 46 252 Q46 212 50 178 Z" fill="${c.skin}" />
-    <path d="M170 168 Q184 205 180 252 Q176 285 168 305 L150 305 Q152 282 154 252 Q154 212 150 178 Z" fill="${c.skin}" />
-    <ellipse cx="30" cy="210" rx="5" ry="17" fill="#fff" opacity="0.22" />
-    <ellipse cx="170" cy="210" rx="5" ry="17" fill="#fff" opacity="0.22" />
-    <ellipse cx="40" cy="215" rx="3" ry="12" fill="#000" opacity="0.12" />
-    <ellipse cx="160" cy="215" rx="3" ry="12" fill="#000" opacity="0.12" />
-    <path d="M24 252 Q32 256 44 252" stroke="#000" stroke-opacity="0.2" stroke-width="1" fill="none" />
-    <path d="M156 252 Q168 256 176 252" stroke="#000" stroke-opacity="0.2" stroke-width="1" fill="none" />
-    <!-- Hüfte -->
-    <path d="M30 228 Q40 252 46 282 Q100 292 154 282 Q160 252 170 228 Z" fill="${c.skin}" />
-    <path d="M30 228 Q40 252 46 282 L48 284 Q42 256 34 230 Z" fill="#000" opacity="0.1" />
-    <path d="M170 228 Q160 252 154 282 L152 284 Q158 256 166 230 Z" fill="#000" opacity="0.1" />
-    <!-- Beine -->
-    <path d="M46 280 Q50 330 54 385 Q58 410 66 420 L86 420 Q88 410 88 385 Q92 330 94 280 Z" fill="${c.skin}" />
-    <path d="M106 280 Q108 330 112 385 Q110 410 114 420 L134 420 Q142 410 146 385 Q150 330 154 280 Z" fill="${c.skin}" />
-    <line x1="100" y1="288" x2="100" y2="418" stroke="#000" stroke-opacity="0.18" stroke-width="1.2" />
-    <ellipse cx="70" cy="335" rx="9" ry="20" fill="#fff" opacity="0.15" />
-    <ellipse cx="130" cy="335" rx="9" ry="20" fill="#fff" opacity="0.15" />
-    <ellipse cx="72" cy="398" rx="6" ry="12" fill="#fff" opacity="0.12" />
-    <ellipse cx="128" cy="398" rx="6" ry="12" fill="#fff" opacity="0.12" />
-    <path d="M58 370 Q68 373 82 370" stroke="#000" stroke-opacity="0.18" stroke-width="0.9" fill="none" />
-    <path d="M118 370 Q128 373 142 370" stroke="#000" stroke-opacity="0.18" stroke-width="0.9" fill="none" />
-    <path d="M46 280 Q50 330 54 418 L58 418 Q54 330 50 280 Z" fill="#000" opacity="0.08" />
-    <path d="M150 280 Q146 330 142 418 L146 418 Q150 330 154 280 Z" fill="#000" opacity="0.08" />
+    <!-- Arme (direkt am Körper) -->
+    <path d="M40 162 Q30 210 34 258 Q38 295 42 305 L58 305 Q56 285 54 258 Q52 210 56 170 Q48 158 40 162 Z" fill="${c.skin}" />
+    <path d="M160 162 Q170 210 166 258 Q162 295 158 305 L142 305 Q144 285 146 258 Q148 210 144 170 Q152 158 160 162 Z" fill="${c.skin}" />
+    <ellipse cx="48" cy="215" rx="2" ry="14" fill="#000" opacity="0.1" />
+    <ellipse cx="152" cy="215" rx="2" ry="14" fill="#000" opacity="0.1" />
+    <path d="M34 258 Q42 261 52 258" stroke="#000" stroke-opacity="0.18" stroke-width="0.8" fill="none" />
+    <path d="M148 258 Q158 261 166 258" stroke="#000" stroke-opacity="0.18" stroke-width="0.8" fill="none" />
+    <!-- Hose / Hüfte -->
+    <path d="M48 228 Q56 252 64 282 Q100 290 136 282 Q144 252 152 228 Z" fill="#374151" />
+    <rect x="50" y="228" width="100" height="5" fill="#1f2937" />
+    <path d="M48 232 Q56 254 64 282 L66 284 Q58 256 52 234 Z" fill="#000" opacity="0.15" />
+    <path d="M152 232 Q144 254 136 282 L134 284 Q142 256 148 234 Z" fill="#000" opacity="0.15" />
+    <!-- Beine (Hose) -->
+    <path d="M64 280 Q66 330 70 385 Q72 410 80 420 L94 420 Q96 410 96 385 Q98 330 98 280 Z" fill="#374151" />
+    <path d="M102 280 Q102 330 102 385 Q104 410 120 420 L134 420 Q136 410 136 385 Q134 330 136 280 Z" fill="#374151" />
+    <line x1="100" y1="290" x2="100" y2="418" stroke="#000" stroke-opacity="0.25" stroke-width="1" />
+    <line x1="80" y1="300" x2="82" y2="415" stroke="#fff" stroke-opacity="0.08" stroke-width="2" />
+    <line x1="120" y1="300" x2="118" y2="415" stroke="#fff" stroke-opacity="0.08" stroke-width="2" />
+    <path d="M72 370 Q82 373 94 370" stroke="#000" stroke-opacity="0.25" stroke-width="0.8" fill="none" />
+    <path d="M106 370 Q118 373 130 370" stroke="#000" stroke-opacity="0.25" stroke-width="0.8" fill="none" />
+    <path d="M64 280 Q66 330 70 418 L74 418 Q70 330 68 280 Z" fill="#000" opacity="0.12" />
+    <path d="M136 280 Q134 330 130 418 L134 418 Q138 330 140 280 Z" fill="#000" opacity="0.12" />
     <!-- Schuhe -->
-    <ellipse cx="76" cy="425" rx="17" ry="7" fill="#1f2937" />
-    <ellipse cx="124" cy="425" rx="17" ry="7" fill="#1f2937" />
-    <ellipse cx="76" cy="422" rx="14" ry="3" fill="#fff" opacity="0.2" />
-    <ellipse cx="124" cy="422" rx="14" ry="3" fill="#fff" opacity="0.2" />
+    <ellipse cx="82" cy="425" rx="15" ry="6" fill="#1f2937" />
+    <ellipse cx="118" cy="425" rx="15" ry="6" fill="#1f2937" />
+    <ellipse cx="82" cy="422" rx="12" ry="2" fill="#fff" opacity="0.2" />
+    <ellipse cx="118" cy="422" rx="12" ry="2" fill="#fff" opacity="0.2" />
     <!-- Hände -->
-    <ellipse cx="40" cy="310" rx="10" ry="8" fill="${c.skin}" />
-    <ellipse cx="160" cy="310" rx="10" ry="8" fill="${c.skin}" />
+    <ellipse cx="50" cy="310" rx="9" ry="7" fill="${c.skin}" />
+    <ellipse cx="150" cy="310" rx="9" ry="7" fill="${c.skin}" />
     ${renderOutfit(c.outfitStyle || 'tshirt', c.outfit)}
-    <path d="M100 170 Q84 182 84 212 Q100 218 100 198" stroke="#000" stroke-opacity="0.1" stroke-width="1.2" fill="none" />
-    <path d="M100 170 Q116 182 116 212 Q100 218 100 198" stroke="#000" stroke-opacity="0.1" stroke-width="1.2" fill="none" />
-    <path d="M87 128 L87 152 Q100 156 113 152 L113 128 Z" fill="${c.skin}" />
-    <path d="M87 145 Q100 152 113 145 L113 152 Q100 156 87 152 Z" fill="#000" opacity="0.18" />
+    <!-- Hals & Kopf -->
+    <path d="M90 132 L90 166 Q100 172 110 166 L110 132 Z" fill="${c.skin}" />
+    <path d="M90 158 Q100 166 110 158 L110 166 Q100 172 90 166 Z" fill="#000" opacity="0.2" />
     <ellipse cx="58" cy="108" rx="7" ry="13" fill="${c.skin}" />
     <ellipse cx="142" cy="108" rx="7" ry="13" fill="${c.skin}" />
     <path d="M57 103 Q61 108 60 115 Q58 118 56 113 Z" fill="#000" opacity="0.2" />
@@ -530,17 +508,14 @@ function avatarSVG(c) {
     <circle cx="117" cy="100" r="1.8" fill="#000" />
     <circle cx="85" cy="98" r="1.2" fill="#fff" />
     <circle cx="119" cy="98" r="1.2" fill="#fff" />
-    <path d="M74 100 Q83 94 92 100" stroke="#1f1f1f" stroke-width="1.3" fill="none" stroke-linecap="round" />
-    <path d="M108 100 Q117 94 126 100" stroke="#1f1f1f" stroke-width="1.3" fill="none" stroke-linecap="round" />
+    <path d="M75 99 Q83 96 91 99" stroke="#1f1f1f" stroke-width="0.6" fill="none" stroke-linecap="round" stroke-opacity="0.7" />
+    <path d="M109 99 Q117 96 125 99" stroke="#1f1f1f" stroke-width="0.6" fill="none" stroke-linecap="round" stroke-opacity="0.7" />
     <path d="M100 108 Q96 120 99 125 Q102 127 104 125" stroke="#8d6e52" stroke-width="1.1" fill="none" stroke-linecap="round" stroke-opacity="0.7" />
     <ellipse cx="97" cy="124" rx="1.5" ry="0.9" fill="#000" opacity="0.25" />
     <ellipse cx="103" cy="124" rx="1.5" ry="0.9" fill="#000" opacity="0.25" />
     ${a.freckles ? '<g><circle cx="78" cy="112" r="1.2" fill="#78350f"/><circle cx="86" cy="116" r="1.2" fill="#78350f"/><circle cx="114" cy="116" r="1.2" fill="#78350f"/><circle cx="122" cy="112" r="1.2" fill="#78350f"/><circle cx="95" cy="118" r="1.2" fill="#78350f"/><circle cx="105" cy="118" r="1.2" fill="#78350f"/></g>' : ''}
     ${a.blush ? '<g><ellipse cx="73" cy="118" rx="8" ry="3.5" fill="#f87171" opacity="0.55"/><ellipse cx="127" cy="118" rx="8" ry="3.5" fill="#f87171" opacity="0.55"/></g>' : ''}
-    <path d="${m.upper}" fill="#be185d" />
-    <path d="${m.lower}" fill="#ec4899" />
-    <path d="M94 138 Q100 140 106 138" stroke="#fff" stroke-opacity="0.4" stroke-width="0.8" fill="none" stroke-linecap="round" />
-    <path d="${m.line}" stroke="#831843" stroke-width="1" fill="none" stroke-linecap="round" />
+    <path d="${m.line}" stroke="#831843" stroke-width="1.2" fill="none" stroke-linecap="round" />
     ${a.fangs ? '<g><path d="M94 122 L92 132 L97 127 Z" fill="#fff" stroke="#1f2937" stroke-width="0.5"/><path d="M106 122 L108 132 L103 127 Z" fill="#fff" stroke="#1f2937" stroke-width="0.5"/></g>' : ''}
     ${a.beard ? '<path d="M72 115 Q100 152 128 115 Q122 142 100 148 Q78 142 72 115 Z" fill="#3b2416"/>' : ''}
     ${a.whiskers ? '<g><line x1="62" y1="115" x2="84" y2="118" stroke="#1f2937" stroke-width="1"/><line x1="62" y1="120" x2="84" y2="120" stroke="#1f2937" stroke-width="1"/><line x1="138" y1="115" x2="116" y2="118" stroke="#1f2937" stroke-width="1"/><line x1="138" y1="120" x2="116" y2="120" stroke="#1f2937" stroke-width="1"/><ellipse cx="100" cy="115" rx="3" ry="2" fill="#1f2937"/></g>' : ''}
