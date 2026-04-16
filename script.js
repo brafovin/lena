@@ -11,12 +11,26 @@ const state = {
   mouth: 'smile',
   outfit: '#3b82f6',
   bg: 'linear-gradient(135deg,#f472b6,#a78bfa)',
-  acc: { glasses: false, hat: false, cape: false, scar: false, mask: false },
+  acc: {
+    glasses: false, hat: false, cape: false, scar: false, mask: false,
+    crown: false, headphones: false, earrings: false, scarf: false, bow: false,
+    headband: false, sunglasses: false, wings: false, halo: false, horns: false,
+    ears: false, beard: false, fangs: false, flower: false, blush: false,
+    necklace: false, star: false, eyepatch: false, whiskers: false, freckles: false,
+  },
   power: '',
   traits: [],
   story: '',
   editingId: null,
 };
+
+const ACC_KEYS = [
+  'glasses', 'hat', 'cape', 'scar', 'mask',
+  'crown', 'headphones', 'earrings', 'scarf', 'bow',
+  'headband', 'sunglasses', 'wings', 'halo', 'horns',
+  'ears', 'beard', 'fangs', 'flower', 'blush',
+  'necklace', 'star', 'eyepatch', 'whiskers', 'freckles',
+];
 
 const STORAGE_KEY = 'meine-charakter-v1';
 
@@ -100,11 +114,10 @@ function updateAvatar() {
   mouth.setAttribute('d', mouths[state.mouth] || mouths.smile);
 
   // Accessoires
-  document.getElementById('glasses').style.display = state.acc.glasses ? '' : 'none';
-  document.getElementById('hat').style.display = state.acc.hat ? '' : 'none';
-  document.getElementById('cape').style.display = state.acc.cape ? '' : 'none';
-  document.getElementById('scar').style.display = state.acc.scar ? '' : 'none';
-  document.getElementById('mask').style.display = state.acc.mask ? '' : 'none';
+  ACC_KEYS.forEach(k => {
+    const el = document.getElementById(k);
+    if (el) el.style.display = state.acc[k] ? '' : 'none';
+  });
 
   // Hintergrund
   document.getElementById('preview-bg').style.background = state.bg;
@@ -127,8 +140,10 @@ function updateAvatar() {
 });
 
 // ---------- Accessoires ----------
-['glasses', 'hat', 'cape', 'scar', 'mask'].forEach(k => {
-  document.getElementById('acc-' + k).addEventListener('change', (e) => {
+ACC_KEYS.forEach(k => {
+  const el = document.getElementById('acc-' + k);
+  if (!el) return;
+  el.addEventListener('change', (e) => {
     state.acc[k] = e.target.checked;
     updateAvatar();
   });
@@ -211,7 +226,8 @@ function resetForm() {
   state.skin = '#f5d0a9'; state.hair = '#3b2416'; state.hairStyle = 'short';
   state.eye = '#4a2c17'; state.mouth = 'smile'; state.outfit = '#3b82f6';
   state.bg = 'linear-gradient(135deg,#f472b6,#a78bfa)';
-  state.acc = { glasses: false, hat: false, cape: false, scar: false, mask: false };
+  state.acc = {};
+  ACC_KEYS.forEach(k => state.acc[k] = false);
   state.power = ''; state.traits = []; state.story = '';
   state.editingId = null;
   syncFormFromState();
@@ -224,8 +240,9 @@ function syncFormFromState() {
   document.getElementById('age').value = state.age;
   document.getElementById('power').value = state.power;
   document.getElementById('story').value = state.story;
-  ['glasses', 'hat', 'cape', 'scar', 'mask'].forEach(k => {
-    document.getElementById('acc-' + k).checked = state.acc[k];
+  ACC_KEYS.forEach(k => {
+    const el = document.getElementById('acc-' + k);
+    if (el) el.checked = !!state.acc[k];
   });
   markSwatch('skin-swatches', state.skin);
   markSwatch('hair-swatches', state.hair);
@@ -281,13 +298,19 @@ function randomize() {
     'linear-gradient(135deg,#0f172a,#334155)',
     'linear-gradient(135deg,#16a34a,#84cc16)',
   ]);
-  state.acc = {
-    glasses: Math.random() < 0.3,
-    hat: Math.random() < 0.25,
-    cape: Math.random() < 0.4,
-    scar: Math.random() < 0.2,
-    mask: Math.random() < 0.15,
-  };
+  // Accessoires: zufällig 2-4 aktivieren, manche mit höherer Chance
+  state.acc = {};
+  ACC_KEYS.forEach(k => state.acc[k] = false);
+  const pickPool = [...ACC_KEYS];
+  const numAcc = 2 + Math.floor(Math.random() * 3);
+  for (let i = 0; i < numAcc; i++) {
+    const pick = pickPool.splice(Math.floor(Math.random() * pickPool.length), 1)[0];
+    state.acc[pick] = true;
+  }
+  // Konflikte auflösen: Brille+Sonnenbrille / Hörner+Heiligenschein / Tierohren+Krone
+  if (state.acc.glasses && state.acc.sunglasses) state.acc.sunglasses = false;
+  if (state.acc.halo && state.acc.horns) state.acc.horns = false;
+  if (state.acc.eyepatch) { state.acc.glasses = false; state.acc.sunglasses = false; }
   state.power = rnd(powers);
   const n = 2 + Math.floor(Math.random() * 3);
   const pool = [...traitsPool];
@@ -317,23 +340,44 @@ function avatarSVG(c) {
     smirk: 'M88 122 Q100 128 112 118',
     sad: 'M88 128 Q100 118 112 128',
   };
+  const a = c.acc || {};
   return `<svg viewBox="0 0 200 240" xmlns="http://www.w3.org/2000/svg">
-    ${c.acc.cape ? '<path d="M60 150 Q100 260 140 150 L160 230 L40 230 Z" fill="#b91c1c" />' : ''}
+    ${a.wings ? '<g><path d="M40 150 Q5 135 15 185 Q35 185 55 170 Z" fill="#fef3c7" stroke="#fbbf24" stroke-width="1.5"/><path d="M160 150 Q195 135 185 185 Q165 185 145 170 Z" fill="#fef3c7" stroke="#fbbf24" stroke-width="1.5"/></g>' : ''}
+    ${a.cape ? '<path d="M60 150 Q100 260 140 150 L160 230 L40 230 Z" fill="#b91c1c" />' : ''}
     <path d="M60 150 Q100 180 140 150 L160 230 L40 230 Z" fill="${c.outfit}" />
     <rect x="90" y="130" width="20" height="20" fill="${c.skin}" />
     <ellipse cx="100" cy="100" rx="40" ry="45" fill="${c.skin}" />
     <ellipse cx="60" cy="105" rx="6" ry="10" fill="${c.skin}" />
     <ellipse cx="140" cy="105" rx="6" ry="10" fill="${c.skin}" />
     ${c.hairStyle !== 'bald' ? `<path d="${hairPaths[c.hairStyle] || hairPaths.short}" fill="${c.hair}" />` : ''}
+    ${a.ears ? '<g><path d="M70 72 L62 40 L86 62 Z" fill="#78350f"/><path d="M130 72 L138 40 L114 62 Z" fill="#78350f"/><path d="M72 68 L70 50 L82 60 Z" fill="#fbbf24"/><path d="M128 68 L130 50 L118 60 Z" fill="#fbbf24"/></g>' : ''}
+    ${a.horns ? '<g><path d="M72 65 Q66 40 82 58 Z" fill="#7f1d1d"/><path d="M128 65 Q134 40 118 58 Z" fill="#7f1d1d"/></g>' : ''}
+    ${a.halo ? '<ellipse cx="100" cy="38" rx="48" ry="8" fill="none" stroke="#fbbf24" stroke-width="3"/>' : ''}
+    ${a.crown ? '<g><path d="M65 58 L75 30 L88 52 L100 22 L112 52 L125 30 L135 58 Z" fill="#fbbf24" stroke="#b45309" stroke-width="1.5"/><circle cx="85" cy="48" r="3" fill="#ef4444"/><circle cx="100" cy="40" r="3" fill="#3b82f6"/><circle cx="115" cy="48" r="3" fill="#10b981"/></g>' : ''}
+    ${a.flower ? '<g><circle cx="64" cy="76" r="4" fill="#ec4899"/><circle cx="68" cy="71" r="4" fill="#ec4899"/><circle cx="72" cy="76" r="4" fill="#ec4899"/><circle cx="68" cy="81" r="4" fill="#ec4899"/><circle cx="68" cy="76" r="2" fill="#fbbf24"/></g>' : ''}
+    ${a.bow ? '<g><path d="M90 52 L78 42 L78 62 Z" fill="#ec4899"/><path d="M110 52 L122 42 L122 62 Z" fill="#ec4899"/><circle cx="100" cy="52" r="5" fill="#be185d"/></g>' : ''}
+    ${a.headband ? '<g><rect x="56" y="75" width="88" height="10" fill="#dc2626"/><circle cx="100" cy="80" r="4" fill="#fbbf24"/></g>' : ''}
+    ${a.headphones ? '<g><path d="M55 75 Q100 25 145 75" stroke="#1f2937" stroke-width="5" fill="none"/><rect x="46" y="75" width="16" height="28" rx="5" fill="#1f2937"/><rect x="138" y="75" width="16" height="28" rx="5" fill="#1f2937"/></g>' : ''}
     <ellipse cx="85" cy="100" rx="6" ry="4" fill="#fff" />
     <ellipse cx="115" cy="100" rx="6" ry="4" fill="#fff" />
     <circle cx="85" cy="100" r="3" fill="${c.eye}" />
     <circle cx="115" cy="100" r="3" fill="${c.eye}" />
+    ${a.freckles ? '<g><circle cx="80" cy="108" r="1.2" fill="#78350f"/><circle cx="88" cy="112" r="1.2" fill="#78350f"/><circle cx="112" cy="112" r="1.2" fill="#78350f"/><circle cx="120" cy="108" r="1.2" fill="#78350f"/><circle cx="95" cy="114" r="1.2" fill="#78350f"/><circle cx="105" cy="114" r="1.2" fill="#78350f"/></g>' : ''}
+    ${a.blush ? '<g><ellipse cx="75" cy="112" rx="7" ry="3" fill="#f87171" opacity="0.55"/><ellipse cx="125" cy="112" rx="7" ry="3" fill="#f87171" opacity="0.55"/></g>' : ''}
     <path d="${mouths[c.mouth] || mouths.smile}" stroke="#b91c1c" stroke-width="2" fill="none" stroke-linecap="round" />
-    ${c.acc.glasses ? '<g><circle cx="85" cy="100" r="10" stroke="#1f2937" stroke-width="2" fill="none"/><circle cx="115" cy="100" r="10" stroke="#1f2937" stroke-width="2" fill="none"/><line x1="95" y1="100" x2="105" y2="100" stroke="#1f2937" stroke-width="2"/></g>' : ''}
-    ${c.acc.hat ? '<g><ellipse cx="100" cy="60" rx="50" ry="8" fill="#1f2937"/><path d="M70 60 L80 20 L120 20 L130 60 Z" fill="#1f2937"/><rect x="72" y="55" width="56" height="5" fill="#fbbf24"/></g>' : ''}
-    ${c.acc.scar ? '<path d="M108 80 L112 88 L108 94" stroke="#b91c1c" stroke-width="1.5" fill="none"/>' : ''}
-    ${c.acc.mask ? '<rect x="60" y="92" width="80" height="20" rx="10" fill="#1f2937"/>' : ''}
+    ${a.fangs ? '<g><path d="M94 122 L92 132 L97 127 Z" fill="#fff" stroke="#1f2937" stroke-width="0.5"/><path d="M106 122 L108 132 L103 127 Z" fill="#fff" stroke="#1f2937" stroke-width="0.5"/></g>' : ''}
+    ${a.beard ? '<path d="M72 115 Q100 152 128 115 Q122 142 100 148 Q78 142 72 115 Z" fill="#3b2416"/>' : ''}
+    ${a.whiskers ? '<g><line x1="62" y1="115" x2="84" y2="118" stroke="#1f2937" stroke-width="1"/><line x1="62" y1="120" x2="84" y2="120" stroke="#1f2937" stroke-width="1"/><line x1="138" y1="115" x2="116" y2="118" stroke="#1f2937" stroke-width="1"/><line x1="138" y1="120" x2="116" y2="120" stroke="#1f2937" stroke-width="1"/><ellipse cx="100" cy="115" rx="3" ry="2" fill="#1f2937"/></g>' : ''}
+    ${a.glasses ? '<g><circle cx="85" cy="100" r="10" stroke="#1f2937" stroke-width="2" fill="none"/><circle cx="115" cy="100" r="10" stroke="#1f2937" stroke-width="2" fill="none"/><line x1="95" y1="100" x2="105" y2="100" stroke="#1f2937" stroke-width="2"/></g>' : ''}
+    ${a.sunglasses ? '<g><rect x="71" y="92" width="24" height="14" rx="3" fill="#1f2937"/><rect x="105" y="92" width="24" height="14" rx="3" fill="#1f2937"/><line x1="95" y1="98" x2="105" y2="98" stroke="#1f2937" stroke-width="2"/></g>' : ''}
+    ${a.eyepatch ? '<g><rect x="73" y="92" width="24" height="14" rx="3" fill="#1f2937"/><path d="M60 88 L140 100" stroke="#1f2937" stroke-width="2"/></g>' : ''}
+    ${a.earrings ? '<g><circle cx="58" cy="118" r="4" fill="#fbbf24" stroke="#b45309" stroke-width="1"/><circle cx="142" cy="118" r="4" fill="#fbbf24" stroke="#b45309" stroke-width="1"/></g>' : ''}
+    ${a.star ? '<polygon points="130,115 132,120 138,120 133,124 135,130 130,126 125,130 127,124 122,120 128,120" fill="#fbbf24" stroke="#b45309" stroke-width="0.5"/>' : ''}
+    ${a.scar ? '<path d="M108 80 L112 88 L108 94" stroke="#b91c1c" stroke-width="1.5" fill="none"/>' : ''}
+    ${a.hat ? '<g><ellipse cx="100" cy="60" rx="50" ry="8" fill="#1f2937"/><path d="M70 60 L80 20 L120 20 L130 60 Z" fill="#1f2937"/><rect x="72" y="55" width="56" height="5" fill="#fbbf24"/></g>' : ''}
+    ${a.mask ? '<rect x="60" y="92" width="80" height="20" rx="10" fill="#1f2937"/>' : ''}
+    ${a.necklace ? '<g><path d="M78 145 Q100 162 122 145" stroke="#fbbf24" stroke-width="2" fill="none"/><polygon points="100,162 95,156 105,156" fill="#3b82f6" stroke="#1e3a8a" stroke-width="1"/></g>' : ''}
+    ${a.scarf ? '<g><path d="M62 138 Q100 162 138 138 L142 158 Q100 178 58 158 Z" fill="#dc2626"/><rect x="72" y="155" width="10" height="28" fill="#b91c1c"/></g>' : ''}
   </svg>`;
 }
 
